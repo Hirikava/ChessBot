@@ -1,3 +1,5 @@
+package Services;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,10 +19,10 @@ public class ChessBot extends TelegramLongPollingBot {
         log.printf(message.getText());
     }
 
+    //do not touch
     public String getBotUsername() {
         return "Chess Fun Club";
     }
-
     public String getBotToken() {
         return "1365111325:AAENOA5DI70PDD-Q2AkmORcVpSh9PQpN680";
     }
