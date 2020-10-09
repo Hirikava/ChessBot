@@ -34,5 +34,16 @@
             <version>LATEST</version>
         </dependency>
 
+        <!-- Spring and H2 DB -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 </project>
