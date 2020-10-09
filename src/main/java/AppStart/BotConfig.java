@@ -1,4 +1,4 @@
-package Configuration;
+package AppStart;
 
 import Services.ChessBot;
 import org.telegram.telegrambots.ApiContextInitializer;
