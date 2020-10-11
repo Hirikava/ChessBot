@@ -1,2 +1,2 @@
-# Services.ChessBot
+# ChessBot
 Telegramm Chess Bot
