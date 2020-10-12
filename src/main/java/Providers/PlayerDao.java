@@ -6,10 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import javax.ws.rs.NotSupportedException;
 import java.util.Optional;
 
-public class PlayerDao implements InsertDao<Player>, GetDao<Player, Integer> {
+public class PlayerDao implements InsertDataAccessMethod<Player>, GetDataAccessMethod<Player, Integer> {
 
     private static final String searchByIdSqlQuery = "SELECT * FROM " + DataBaseConstants.TableNames.PlayersTableName + " WHERE ID = ?";
     private static final String insertNewPlayerSqlQuery = "INSERT INTO " + DataBaseConstants.TableNames.PlayersTableName

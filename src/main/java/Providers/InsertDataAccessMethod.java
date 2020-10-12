@@ -1,5 +1,5 @@
 package Providers;
 
-public interface InsertDao<T> {
+public interface InsertDataAccessMethod<T> {
     void Insert(T object);
 }

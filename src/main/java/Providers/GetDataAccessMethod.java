@@ -2,6 +2,6 @@ package Providers;
 
 import java.util.Optional;
 
-public interface GetDao<T, TSearch> {
+public interface GetDataAccessMethod<T, TSearch> {
     Optional<T> Get(TSearch searchObject);
 }
