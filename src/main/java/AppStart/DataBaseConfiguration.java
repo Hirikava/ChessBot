@@ -4,7 +4,6 @@ import Repository.DataBaseConstants;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 public class DataBaseConfiguration {
 

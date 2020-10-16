@@ -7,8 +7,7 @@ public class Player {
         Id = id;
     }
 
-    public int getId()
-    {
+    public int getId() {
         return this.Id;
     }
 }

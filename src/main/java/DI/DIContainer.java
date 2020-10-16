@@ -1,4 +1,5 @@
 package DI;
+
 import com.google.inject.AbstractModule;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
@@ -13,5 +14,6 @@ public class DIContainer extends AbstractModule {
         dataSource.setUrl("jdbc:h2:./ChessBotDB");
 
         bind(DataSource.class).toInstance(dataSource);
+
     }
 }
