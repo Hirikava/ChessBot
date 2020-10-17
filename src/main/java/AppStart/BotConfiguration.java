@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
-public class BotConfig {
+public class BotConfiguration {
     public static void Configure(TelegramLongPollingBot bot) {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
