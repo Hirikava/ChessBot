@@ -7,6 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class UnknownCommandController implements IController {
     @Override
     public BotApiMethod<Message> ExecuteCommand(Message message) {
-        return new SendMessage(message.getChatId(), "Неизвсетная комманда :(");
+        return new SendMessage(message.getChatId().toString(), "Неизвсетная комманда :(");
     }
 }
