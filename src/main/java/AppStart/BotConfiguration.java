@@ -1,17 +1,18 @@
-import org.telegram.telegrambots.ApiContextInitializer;
+package AppStart;
+
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class BotConfig {
 
-    public static void Configure() {
-        ApiContextInitializer.init();
+public class BotConfiguration {
+    public static void Configure(TelegramLongPollingBot bot) {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            ChessBot requesterBot = new ChessBot();
-            telegramBotsApi.registerBot(requesterBot);
+            telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }
