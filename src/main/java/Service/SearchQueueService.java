@@ -1,23 +1,48 @@
 package Service;
 
 import ServerModels.Player;
+import com.google.inject.Inject;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
+import java.util.Queue;
+
+
 
 public class SearchQueueService {
 
+    @Inject
+    GameSessionsService gameSessionsService;
 
-    private ConcurrentLinkedQueue<Player> playersQueue = new ConcurrentLinkedQueue<Player>();
+    private Queue<Player> playersQueue = new LinkedList<Player>();
+
 
     public void addPlayerIntoAQueue(Player player) {
-        playersQueue.add(player);
+        synchronized (playersQueue) {
+            playersQueue.add(player);
+        }
     }
 
     public boolean removePlayerFromQueue(Player player) {
-        return playersQueue.remove(player);
+        synchronized (playersQueue) {
+            return playersQueue.remove(player);
+        }
     }
 
     public boolean isPlayerBusy(Player player) {
-        return playersQueue.contains(player);
+        synchronized (playersQueue) {
+            return playersQueue.contains(player);
+        }
+    }
+
+    public void startMatch() {
+        synchronized (playersQueue) {
+            if (playersQueue.size() < 2)
+                return;
+
+            Player player1 = playersQueue.poll();
+            Player player2 = playersQueue.poll();
+
+            gameSessionsService.startNewMatch(player1, player2);
+        }
     }
 }
