@@ -1,5 +1,6 @@
 import Controllers.ControllerFactory;
 import Controllers.IController;
+import Service.PlayerLockService;
 import com.google.inject.Inject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -7,22 +8,31 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class ChessBot extends TelegramLongPollingBot {
 
     @Inject
     private ControllerFactory controllerFactory;
+    @Inject
+    private PlayerLockService playerLockService;
 
 
     @Override
     public void onUpdateReceived(Update update) {
-        IController controller = controllerFactory.GetController(update.getMessage());
-        BotApiMethod<Message> executionResult = controller.ExecuteCommand(update.getMessage());
+        Lock lock = new ReentrantLock();
         try {
+            Integer userId = update.getMessage().getFrom().getId();
+            lock = playerLockService.getPlayerLock(userId);
+            IController controller = controllerFactory.GetController(update.getMessage());
+            BotApiMethod<Message> executionResult = controller.ExecuteCommand(update.getMessage());
             execute(executionResult);
-        } catch (TelegramApiException exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            lock.unlock();
         }
-
     }
 
     //Do Not Touch
