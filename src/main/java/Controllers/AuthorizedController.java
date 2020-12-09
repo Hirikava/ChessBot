@@ -21,10 +21,10 @@ public class AuthorizedController implements IController {
         Optional<Player> player = playerDao.Get(userId);
         if (!player.isPresent())
             return new SendMessage(message.getChatId().toString(), "Для таго что бы начать взаимодействовать с ботом зарегистрируйтесь с помощью команды /start");
-        return ExecuteCommandInternal(message);
+        return ExecuteCommandInternal(message, player.get());
     }
 
-    protected BotApiMethod<Message> ExecuteCommandInternal(Message message){
+    protected BotApiMethod<Message> ExecuteCommandInternal(Message message, Player player){
         throw new NotImplementedException();
     };
 }

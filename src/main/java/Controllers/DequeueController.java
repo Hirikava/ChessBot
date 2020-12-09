@@ -17,17 +17,11 @@ public class DequeueController extends AuthorizedController {
 
 
     @Override
-    public BotApiMethod<Message> ExecuteCommandInternal(Message message) {
-        Integer userId = message.getFrom().getId();
-        Optional<Player> player = playerDao.Get(userId);
-        if (!player.isPresent())
-            return new SendMessage(message.getChatId().toString(), "Для таго что бы начать взаимодействовать с ботом зарегистрируйтесь с помощью команды /start");
-
-
-        if (!searchQueueService.isPlayerBusy(player.get()))
+    public BotApiMethod<Message> ExecuteCommandInternal(Message message, Player player) {
+        if (!searchQueueService.isPlayerBusy(player))
             return new SendMessage(message.getChatId().toString(), "Вы не находится в очереди подбора соперников. Для того чтобы встать в очерель воспользуйтесь командой /play");
 
-        searchQueueService.removePlayerFromQueue(player.get());
+        searchQueueService.removePlayerFromQueue(player);
         return new SendMessage(message.getChatId().toString(), "Вы вышли из очереди подбора игроков.");
     }
 }
