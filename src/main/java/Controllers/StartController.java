@@ -17,9 +17,9 @@ public class StartController implements IController {
     public BotApiMethod<Message> ExecuteCommand(Message message) {
         Optional<Player> optionalPlayer = playerDao.Get(message.getFrom().getId());
         if (optionalPlayer.isPresent())
-            return new SendMessage(message.getChat().getId().toString(), "Мы уже знакомы :)");
+            return new SendMessage(message.getChat().getId().toString(), "Вы уже зарегестрированы.");
 
-        playerDao.Insert(new Player(message.getFrom().getId()));
-        return new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы");
+        playerDao.Insert(new Player(message.getFrom().getId(), message.getChatId().toString(), message.getFrom().getUserName()));
+        return new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы.");
     }
 }

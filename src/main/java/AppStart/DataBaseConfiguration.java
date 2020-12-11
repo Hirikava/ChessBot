@@ -21,7 +21,9 @@ public class DataBaseConfiguration {
     }
 
     private static void CreatePlayerTable(JdbcTemplate template) {
-        String createPlayerTableSqlQuery = "CREATE TABLE " + DataBaseConstants.TableNames.PlayersTableName + "(" + DataBaseConstants.FieldNames.IdFieldName + " INT PRIMARY KEY)";
+        String createPlayerTableSqlQuery = "CREATE TABLE " + DataBaseConstants.TableNames.PlayersTableName + "(" + DataBaseConstants.FieldNames.IdFieldName + " INT PRIMARY KEY, " +
+                DataBaseConstants.FieldNames.ChatIdFieldName + " VARCHAR(100), " + DataBaseConstants.FieldNames.UserNameFiledName + " VARCHAR(100) " +
+                ")";
         template.update(createPlayerTableSqlQuery);
     }
 

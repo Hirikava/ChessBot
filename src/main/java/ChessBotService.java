@@ -2,6 +2,7 @@ import AppStart.BotConfiguration;
 import AppStart.DataBaseConfiguration;
 import DI.DIContainer;
 import Infrastructer.DataBaseConnectionInfo;
+import Service.SearchQueueService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sun.deploy.cache.Cache;
@@ -18,7 +19,20 @@ public class ChessBotService {
         Injector injector = Guice.createInjector(new DIContainer(dataBaseConnectionInfo));
         DataBaseConfiguration.Configure(injector.getInstance(DataSource.class));
         ApiContextInitializer.init();
-        ChessBot chessBot = injector.getInstance(ChessBot.class);
+        Service.ChessBot chessBot = injector.getInstance(Service.ChessBot.class);
         BotConfiguration.Configure(chessBot);
+
+        SearchQueueService searchQueueService = injector.getInstance(SearchQueueService.class);
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    searchQueueService.startMatch();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 }
