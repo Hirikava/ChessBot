@@ -19,7 +19,7 @@ public class StartController implements IController {
         if (optionalPlayer.isPresent())
             return new SendMessage(message.getChat().getId().toString(), "Вы уже зарегестрированы.");
 
-        playerDao.Insert(new Player(message.getFrom().getId()));
+        playerDao.Insert(new Player(message.getFrom().getId(), message.getChatId().toString(), message.getFrom().getUserName()));
         return new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы.");
     }
 }

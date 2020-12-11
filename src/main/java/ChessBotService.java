@@ -6,13 +6,6 @@ import Service.SearchQueueService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sun.deploy.cache.Cache;
-import org.jobrunr.configuration.JobRunr;
-import org.jobrunr.scheduling.BackgroundJob;
-import org.jobrunr.scheduling.JobScheduler;
-import org.jobrunr.scheduling.cron.Cron;
-import org.jobrunr.server.threadpool.JobRunrExecutor;
-import org.jobrunr.storage.InMemoryStorageProvider;
-import org.jobrunr.storage.StorageProvider;
 
 
 import javax.sql.DataSource;
@@ -26,7 +19,7 @@ public class ChessBotService {
         Injector injector = Guice.createInjector(new DIContainer(dataBaseConnectionInfo));
         DataBaseConfiguration.Configure(injector.getInstance(DataSource.class));
         ApiContextInitializer.init();
-        ChessBot chessBot = injector.getInstance(ChessBot.class);
+        Service.ChessBot chessBot = injector.getInstance(Service.ChessBot.class);
         BotConfiguration.Configure(chessBot);
 
         SearchQueueService searchQueueService = injector.getInstance(SearchQueueService.class);

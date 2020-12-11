@@ -3,14 +3,27 @@ package ServerModels;
 import java.util.Objects;
 
 public class Player {
-    final int Id;
 
-    public Player(int id) {
+    final int Id;
+    final String ChatId;
+    final String UserName;
+
+    public Player(int id, String chatId, String userName) {
+        ChatId = chatId;
         Id = id;
+        UserName = userName;
     }
 
     public int getId() {
         return this.Id;
+    }
+
+    public String getChatId() {
+        return ChatId;
+    }
+
+    public String getUserName() {
+        return UserName;
     }
 
     @Override

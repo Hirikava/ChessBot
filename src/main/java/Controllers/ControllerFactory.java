@@ -12,13 +12,14 @@ public class ControllerFactory {
     public IController GetController(Message message) {
         String text = message.getText();
 
-        if (text.startsWith("/start"))
+        if (text.equals("/start"))
             return injector.getInstance(StartController.class);
-        if (text.startsWith("/play"))
+        if (text.equals("/play"))
             return injector.getInstance(EnqueueController.class);
-        if(text.startsWith("/quit"))
+        if (text.equals("/quit"))
             return injector.getInstance(DequeueController.class);
-
+        if (text.equals("/help"))
+            return injector.getInstance(HelpController.class);
         return injector.getInstance(UnknownCommandController.class);
     }
 }
