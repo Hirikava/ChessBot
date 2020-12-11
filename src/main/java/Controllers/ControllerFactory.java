@@ -20,6 +20,8 @@ public class ControllerFactory {
             return injector.getInstance(DequeueController.class);
         if (text.equals("/help"))
             return injector.getInstance(HelpController.class);
+        if (text.startsWith("/turn "))
+            return injector.getInstance(TurnController.class);
         return injector.getInstance(UnknownCommandController.class);
     }
 }
