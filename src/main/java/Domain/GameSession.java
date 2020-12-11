@@ -4,13 +4,15 @@ import java.util.Optional;
 
 public class GameSession {
     private PlayerColour Turn;
+    private Figure[][] Board;
 
     public GameSession() {
         Turn = PlayerColour.White;
+        Board = new Figure[8][8];
     }
 
-    private GameState createGameState() {
-        return new GameState(Optional.of(Turn));
+    public GameState createGameState() {
+        return new GameState(Optional.of(Turn), Board);
     }
 
     /*public void FiguresTurn(ChessField field, Coords coordsFrom, Coords coordsTo){

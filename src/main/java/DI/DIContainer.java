@@ -1,10 +1,7 @@
 package DI;
 
 import Infrastructer.DataBaseConnectionInfo;
-import Service.ChessBot;
-import Service.ISendMessageService;
-import Service.PlayerLockService;
-import Service.SearchQueueService;
+import Service.*;
 import com.google.inject.AbstractModule;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
@@ -27,6 +24,9 @@ public class DIContainer extends AbstractModule {
         bind(DataSource.class).toInstance(dataSource);
 
         ChessBot chessBot = new ChessBot();
+
+
+        bind(GameSessionsService.class).toInstance(new GameSessionsService());
         bind(ChessBot.class).toInstance(chessBot);
         bind(ISendMessageService.class).toInstance(chessBot);
         bind(PlayerLockService.class).toInstance(new PlayerLockService());
