@@ -5,10 +5,14 @@ import Controllers.IController;
 import com.google.inject.Inject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,7 +54,16 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
 
 
     @Override
-    public void Send(BotApiMethod<Message> message) {
+    public void Send(SendMessage message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException telegramApiException) {
+            telegramApiException.printStackTrace();
+        }
+    }
+
+    @Override
+    public void Send(SendPhoto message) {
         try {
             execute(message);
         } catch (TelegramApiException telegramApiException) {
