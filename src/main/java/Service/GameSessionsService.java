@@ -24,16 +24,15 @@ public class GameSessionsService {
     @Inject
     private ChessBordRenderer chessBordRenderer;
 
-    private ConcurrentHashMap<Player, Triplet<List<Player>, GameSession, PlayerColour>> gameSessionsMap
-            = new ConcurrentHashMap<Player, Triplet<List<Player>, GameSession, PlayerColour>>();
+    private ConcurrentHashMap<Player, Triplet<Player, GameSession, PlayerColour>> gameSessionsMap
+            = new ConcurrentHashMap<Player, Triplet<Player, GameSession, PlayerColour>>();
 
 
     public void startNewMatch(Player player1, Player player2) {
         GameSession gameSession = new GameSession();
-        List<Player> players = Arrays.asList(player1, player2);
 
-        gameSessionsMap.put(player1, new Triplet<List<Player>, GameSession, PlayerColour>(players, gameSession, PlayerColour.White));
-        gameSessionsMap.put(player2, new Triplet<List<Player>, GameSession, PlayerColour>(players, gameSession, PlayerColour.Black));
+        gameSessionsMap.put(player1, new Triplet<Player, GameSession, PlayerColour>(player2, gameSession, PlayerColour.White));
+        gameSessionsMap.put(player2, new Triplet<Player, GameSession, PlayerColour>(player1, gameSession, PlayerColour.Black));
 
         SendMessage message = new SendMessage(player1.getChatId(), String.format("Ваш соперник %s.", player2.getUserName()));
         SendMessage message2 = new SendMessage(player2.getChatId(), String.format("Ваш соперник %s.", player1.getUserName()));
@@ -49,7 +48,7 @@ public class GameSessionsService {
         sendMessageService.Send(sendPhoto2);
     }
 
-    public Triplet<List<Player>, GameSession, PlayerColour> getGameSession(Player player) {
+    public Triplet<Player, GameSession, PlayerColour> getGameSession(Player player) {
         return gameSessionsMap.get(player);
     }
 }

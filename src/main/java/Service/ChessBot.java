@@ -4,15 +4,11 @@ import Controllers.ControllerFactory;
 import Controllers.IController;
 import com.google.inject.Inject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,8 +27,7 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
             Integer userId = update.getMessage().getFrom().getId();
             lock = playerLockService.getPlayerLock(userId);
             IController controller = controllerFactory.GetController(update.getMessage());
-            BotApiMethod<Message> executionResult = controller.ExecuteCommand(update.getMessage());
-            execute(executionResult);
+            controller.ExecuteCommand(update.getMessage());
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {

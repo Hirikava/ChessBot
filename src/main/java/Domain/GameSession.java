@@ -62,6 +62,7 @@ public class GameSession {
             return new TurnResult(TurnError.NoFigure, createGameState());
 
 
+
         Board[cordsTo.getY()][cordsTo.getX()] = Board[cordsFrom.getY()][cordsFrom.getX()];
         Board[cordsFrom.getY()][cordsFrom.getX()] = null;
 
