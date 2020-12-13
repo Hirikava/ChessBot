@@ -36,19 +36,8 @@ public class GameSession {
     }
 
     public GameState createGameState() {
-        return new GameState(Optional.of(Turn), Board);
+        return new GameState(Optional.empty(), Board);
     }
-
-    /*public void FiguresTurn(ChessField field, Coords coordsFrom, Coords coordsTo){
-        Figure figure = ChessField.chessBoard[coordsFrom.X][coordsFrom.Y];
-        switch (figure.getFiguresName()){
-            case King:
-                //метод(цвет, координатыОткуда, координатыКуда)
-                break;
-            case Pawn:
-                break;
-        }
-    }*/
 
 
     public TurnResult MakeTurn(PlayerColour colour, Cords cordsFrom, Cords cordsTo) {
