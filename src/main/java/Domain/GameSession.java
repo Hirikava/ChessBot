@@ -4,55 +4,86 @@ import java.util.Optional;
 
 public class GameSession {
     private PlayerColour Turn;
+    Figure[][] chessBoard;
 
     public GameSession() {
         Turn = PlayerColour.White;
+
+        //Init black pieces
+        chessBoard = new Figure[8][8];
+        chessBoard[7][0] = new Figure(Pieces.Rook, PlayerColour.Black);
+        chessBoard[7][1] = new Figure(Pieces.Knight, PlayerColour.Black);
+        chessBoard[7][2] = new Figure(Pieces.Bishop, PlayerColour.Black);
+        chessBoard[7][3] = new Figure(Pieces.Queen, PlayerColour.Black);
+        chessBoard[7][4] = new Figure(Pieces.King, PlayerColour.Black);
+        chessBoard[7][5] = new Figure(Pieces.Bishop, PlayerColour.Black);
+        chessBoard[7][6] = new Figure(Pieces.Knight, PlayerColour.Black);
+        chessBoard[7][7] = new Figure(Pieces.Rook, PlayerColour.Black);
+
+        for (int j = 0; j < 8; j++)
+            chessBoard[6][j] = new Figure(Pieces.Pawn, PlayerColour.Black);
+
+        //Init white pieces
+        chessBoard[0][0] = new Figure(Pieces.Rook, PlayerColour.White);
+        chessBoard[0][1] = new Figure(Pieces.Knight, PlayerColour.White);
+        chessBoard[0][2] = new Figure(Pieces.Bishop, PlayerColour.White);
+        chessBoard[0][3] = new Figure(Pieces.Queen, PlayerColour.White);
+        chessBoard[0][4] = new Figure(Pieces.King, PlayerColour.White);
+        chessBoard[0][5] = new Figure(Pieces.Bishop, PlayerColour.White);
+        chessBoard[0][6] = new Figure(Pieces.Knight, PlayerColour.White);
+        chessBoard[0][7] = new Figure(Pieces.Rook, PlayerColour.White);
+
+        for (int j = 0; j < 8; j++)
+            chessBoard[1][j] = new Figure(Pieces.Pawn, PlayerColour.White);
+
+
     }
 
-    private GameState createGameState() {
-        return new GameState(Optional.of(Turn));
+    public GameState createGameState() {
+        return new GameState(Optional.of(Turn), chessBoard.clone());
     }
 
-    public Boolean PawnsTurn(ChessField field, Coords coordsFrom, Coords coordsTo){
+    public Boolean PawnsTurn(Cords coordsFrom, Cords coordsTo) {
         return true;
     }
 
-    public Boolean FiguresTurn(ChessField field, Coords coordsFrom, Coords coordsTo){
-        Figure figure = field.getFigure(coordsFrom);
+    public Boolean FiguresTurn(Cords coordsFrom, Cords coordsTo) {
+        Figure figure = chessBoard[coordsFrom.getX()][coordsFrom.getY()];
         if (figure == null) return false;
         else
-            switch (figure.getFiguresName()){
+            switch (figure.getFiguresName()) {
                 case King:
                     return true;
-                    //break;
+                //break;
                 case Pawn:
-                    return PawnsTurn(field, coordsFrom, coordsTo);
-                   // break;
+                    return PawnsTurn(coordsFrom, coordsTo);
+                // break;
                 case Bishop:
                     return true;
-                   // break;
+                // break;
                 case Rook:
                     return true;
-                    //break;
+                //break;
                 case Knight:
                     return true;
-                   // break;
+                // break;
                 case Queen:
                     return true;
-                    //break;
+                //break;
             }
-            return true;
+        return true;
     }
 
-     public Boolean CheckCoords(Coords coords){
-         return coords.X < 0 || coords.X > 7 || coords.Y < 0 || coords.Y > 7; //проверили,что координаты в правильном диапазоне
-     }
+    public Boolean CheckCords(Cords coords) {
+        return coords.getX() < 0 || coords.getX() > 7 || coords.getY() < 0 || coords.getY() > 7; //проверили,что координаты в правильном диапазоне
+    }
 
-    public TurnResult MakeTurn(PlayerColour colour, Coords coordsFrom, Coords coordsTo, ChessField field) {
-         if (CheckCoords(coordsFrom) && !CheckCoords(coordsTo)) return new TurnResult(TurnError.WrongCoords, createGameState());
-         if (!FiguresTurn(field, coordsFrom, coordsTo)) return new TurnResult(TurnError.NotAFigure, createGameState());
+    public TurnResult MakeTurn(PlayerColour colour, Cords coordsFrom, Cords coordsTo) {
         if (colour != Turn)
             return new TurnResult(TurnError.AnotherPlayerTurn, createGameState());
+        if (CheckCords(coordsFrom) || CheckCords(coordsTo))
+            return new TurnResult(TurnError.WrongCoords, createGameState());
+        if (!FiguresTurn(coordsFrom, coordsTo)) return new TurnResult(TurnError.NotAFigure, createGameState());
         return new TurnResult(TurnError.None, createGameState());
     }
 }

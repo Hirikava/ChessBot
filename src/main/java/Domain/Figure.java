@@ -9,6 +9,7 @@ public class Figure {
         this.colour = colour;
     }
 
+
     public Pieces getFiguresName(){
         return FiguresName;
     }

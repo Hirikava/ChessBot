@@ -2,7 +2,7 @@ package Controllers;
 
 import Providers.PlayerDao;
 import ServerModels.Player;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import Service.ISendMessageService;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -12,14 +12,19 @@ import java.util.Optional;
 public class StartController implements IController {
 
     @Inject
+    private ISendMessageService sendMessageService;
+
+    @Inject
     private PlayerDao playerDao;
 
-    public BotApiMethod<Message> ExecuteCommand(Message message) {
+    public void ExecuteCommand(Message message) {
         Optional<Player> optionalPlayer = playerDao.Get(message.getFrom().getId());
-        if (optionalPlayer.isPresent())
-            return new SendMessage(message.getChat().getId().toString(), "Мы уже знакомы :)");
+        if (optionalPlayer.isPresent()) {
+            sendMessageService.Send(new SendMessage(message.getChat().getId().toString(), "Вы уже зарегестрированы."));
+            return;
+        }
 
-        playerDao.Insert(new Player(message.getFrom().getId()));
-        return new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы");
+        playerDao.Insert(new Player(message.getFrom().getId(), message.getChatId().toString(), message.getFrom().getUserName()));
+        sendMessageService.Send(new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы."));
     }
 }
