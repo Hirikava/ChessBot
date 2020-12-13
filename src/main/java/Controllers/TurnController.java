@@ -1,6 +1,8 @@
 package Controllers;
 
 import Domain.*;
+import Providers.MatchesDao;
+import ServerModels.Match;
 import ServerModels.Player;
 import Service.ChessBordRenderer;
 import Service.GameSessionsService;
@@ -21,6 +23,9 @@ public class TurnController extends AuthorizedController {
 
     @Inject
     private ChessBordRenderer chessBordRenderer;
+
+    @Inject
+    private MatchesDao matchesDao;
 
 
     @Override
@@ -45,7 +50,6 @@ public class TurnController extends AuthorizedController {
             sendMessageService.Send(new SendMessage(player.getChatId(), "Неправильный ход."));
             return;
         }
-
         Player oponent = gameInfo.getValue0();
 
         ByteArrayInputStream forPlayer = chessBordRenderer.RenderChessBoard(turnResult.getGameState().getBoard(), gameInfo.getValue2());
@@ -53,6 +57,13 @@ public class TurnController extends AuthorizedController {
         sendMessageService.Send(new SendMessage(oponent.getChatId(), String.format("%s: %s", player.getUserName(), message.getText().split(" ")[1])));
         sendMessageService.Send(new SendPhoto(player.getChatId(), new InputFile().setMedia(forPlayer, "board")));
         sendMessageService.Send(new SendPhoto(oponent.getChatId(), new InputFile().setMedia(forOponent, "board")));
+
+
+        if (turnResult.getGameState().getWinner().isPresent()) {
+            PlayerColour winnerColor = turnResult.getGameState().getWinner().get();
+            matchesDao.Insert(new Match(player.getId(), oponent.getId(), gameInfo.getValue2() == winnerColor ? player.getId() : oponent.getId()));
+            gameSessionsService.endMatch(player, oponent);
+        }
     }
 
     private Pair<Cords, Cords> GetCordsFromMessage(String messageText) {

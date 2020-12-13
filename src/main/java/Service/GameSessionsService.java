@@ -48,6 +48,11 @@ public class GameSessionsService {
         sendMessageService.Send(sendPhoto2);
     }
 
+    public void endMatch(Player player1, Player player2) {
+        gameSessionsMap.remove(player1);
+        gameSessionsMap.remove(player2);
+    }
+
     public Triplet<Player, GameSession, PlayerColour> getGameSession(Player player) {
         return gameSessionsMap.get(player);
     }

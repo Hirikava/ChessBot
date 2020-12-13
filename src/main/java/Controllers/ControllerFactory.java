@@ -22,6 +22,8 @@ public class ControllerFactory {
             return injector.getInstance(HelpController.class);
         if (text.startsWith("/turn "))
             return injector.getInstance(TurnController.class);
+        if (text.equals("/concede"))
+            return injector.getInstance(ConcedeController.class);
         return injector.getInstance(UnknownCommandController.class);
     }
 }
