@@ -1,5 +1,7 @@
 package Domain;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.Optional;
 
 public class GameSession {
@@ -129,6 +131,66 @@ public class GameSession {
     }
 
 
+    private Boolean FindFigureInTheDiagonal(int FromThisCoordX, int ToThisCoordX, int FromThisCoordY){
+        for (int i = FromThisCoordX + 1; i < ToThisCoordX; i++){
+            FromThisCoordY++;
+            if (chessBoard[i][FromThisCoordY] != null) return false;
+            FromThisCoordY++;
+        }
+        return true;
+    }
+
+    private Boolean NoFigureInTheWayDiagonal(Cords coordsFrom, Cords coordsTo){
+        int FromThisCoordX = coordsFrom.getX();
+        int FromThisCoordY = coordsFrom.getY();
+        int ToThisCoordX = coordsTo.getX();
+
+
+        if (coordsFrom.getX() < coordsTo.getX() && coordsFrom.getY() < coordsTo.getY()){
+            return FindFigureInTheDiagonal(FromThisCoordX, ToThisCoordX, FromThisCoordY);
+        }
+        if (coordsFrom.getX() > coordsTo.getX() && coordsFrom.getY() > coordsTo.getY() ){
+            FromThisCoordX = coordsTo.getX();
+            ToThisCoordX = coordsFrom.getX();
+            FromThisCoordY = coordsTo.getY();
+            return FindFigureInTheDiagonal(FromThisCoordX, ToThisCoordX, FromThisCoordY);
+        }
+
+        if (coordsFrom.getX() > coordsTo.getX() && coordsFrom.getY() < coordsTo.getY()){
+            for (int i = FromThisCoordX-1; i > ToThisCoordX; i--){
+                FromThisCoordY++;
+                if (chessBoard[i][FromThisCoordY] != null) return false;
+                FromThisCoordY++;
+            }
+        }
+
+        if (coordsFrom.getX() < coordsTo.getX() && coordsFrom.getY() > coordsTo.getY()){
+            for (int i = FromThisCoordX+1; i < ToThisCoordX; i++){
+                FromThisCoordY--;
+                if (chessBoard[i][FromThisCoordY] != null) return false;
+                FromThisCoordY--;
+            }
+        }
+        return true;
+    }
+
+
+    private Boolean DiagonalTurn(Cords coordsFrom, Cords coordsTo){
+        return Math.abs(coordsFrom.getX() - coordsTo.getX()) == Math.abs(coordsFrom.getY() - coordsTo.getY());
+    }
+
+    private Boolean BishopsTurn(Figure figure, Cords coordsFrom, Cords coordsTo) {
+        PlayerColour colour = figure.getColour();
+        if (coordsFrom.getX() == coordsTo.getX() && coordsFrom.getY() == coordsTo.getY()) return false;
+
+        if (DiagonalTurn(coordsFrom, coordsTo) && (chessBoard[coordsTo.getX()][coordsTo.getY()] == null || chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() != colour ) &&
+                NoFigureInTheWayDiagonal(coordsFrom, coordsTo)){
+            MoveFigure(figure, coordsFrom, coordsTo);
+            return true;
+        }
+
+        return false;
+    }
 
     private Boolean FiguresTurn(Cords coordsFrom, Cords coordsTo) {
         Figure figure = chessBoard[coordsFrom.getX()][coordsFrom.getY()];
@@ -140,7 +202,7 @@ public class GameSession {
                 case Pawn:
                     return PawnsTurn(figure, coordsFrom, coordsTo);
                 case Bishop:
-                    return true;
+                    return BishopsTurn(figure, coordsFrom, coordsTo);
                 case Rook:
                     return RooksTurn(figure, coordsFrom, coordsTo);
                 case Knight:
@@ -151,7 +213,7 @@ public class GameSession {
         return true;
     }
 
-    public Boolean CheckCords(Cords coords) {
+    private Boolean CheckCords(Cords coords) {
         return coords.getX() < 0 || coords.getX() > 7 || coords.getY() < 0 || coords.getY() > 7; //проверили,что координаты в правильном диапазоне
     }
 
