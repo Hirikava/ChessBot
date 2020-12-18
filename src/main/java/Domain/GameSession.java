@@ -84,6 +84,52 @@ public class GameSession {
         return false;
     }
 
+    private Boolean NoFigureInTheWayForX(int FromThisCoord, int ToThisCoord, int UnchangableCoord){
+        //changes X
+        if (FromThisCoord > ToThisCoord) {
+            int x = FromThisCoord;
+            FromThisCoord = ToThisCoord;
+            ToThisCoord = x;
+        }
+        for (int i = FromThisCoord+1; i < ToThisCoord; i++) {
+            if (chessBoard[i][UnchangableCoord] != null) return false;
+        }
+        return true;
+    }
+
+    private Boolean NoFigureInTheWayForY(int FromThisCoord, int ToThisCoord, int UnchangableCoord){
+        //changes Y
+        if (FromThisCoord > ToThisCoord) {
+            int x = FromThisCoord;
+            FromThisCoord = ToThisCoord;
+            ToThisCoord = x;
+        }
+        for (int i = FromThisCoord + 1; i < ToThisCoord; i++) {
+            if (chessBoard[UnchangableCoord][i] != null) return false;
+        }
+        return true;
+    }
+
+    private Boolean RooksTurn(Figure figure, Cords coordsFrom, Cords coordsTo){
+        PlayerColour colour = figure.getColour();
+        if (coordsFrom.getX() == coordsTo.getX() && coordsFrom.getY() == coordsTo.getY()) return false;
+
+        if (coordsFrom.getX() == coordsTo.getX() && coordsFrom.getY() != coordsTo.getY() && (chessBoard[coordsTo.getX()][coordsTo.getY()] == null || chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() != colour )
+                && NoFigureInTheWayForY(coordsFrom.getY(), coordsTo.getY(), coordsFrom.getX())) {
+            MoveFigure(figure, coordsFrom, coordsTo);
+            return true;
+        }
+
+        if (coordsFrom.getX() != coordsTo.getX() && coordsFrom.getY() == coordsTo.getY() && (chessBoard[coordsTo.getX()][coordsTo.getY()] == null || chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() != colour )
+                && NoFigureInTheWayForX(coordsFrom.getX(), coordsTo.getX(), coordsFrom.getY())){
+            MoveFigure(figure, coordsFrom, coordsTo);
+            return true;
+        }
+        return false;
+    }
+
+
+
     private Boolean FiguresTurn(Cords coordsFrom, Cords coordsTo) {
         Figure figure = chessBoard[coordsFrom.getX()][coordsFrom.getY()];
         if (figure == null) return false;
@@ -96,7 +142,7 @@ public class GameSession {
                 case Bishop:
                     return true;
                 case Rook:
-                    return true;
+                    return RooksTurn(figure, coordsFrom, coordsTo);
                 case Knight:
                     return true;
                 case Queen:
