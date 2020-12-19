@@ -165,7 +165,6 @@ public class GameSession {
             for (int i = FromThisCoordX-1; i > ToThisCoordX; i--){
                 FromThisCoordY++;
                 if (chessBoard[i][FromThisCoordY] != null) return false;
-                FromThisCoordY++;
             }
         }
 
@@ -173,7 +172,6 @@ public class GameSession {
             for (int i = FromThisCoordX+1; i < ToThisCoordX; i++){
                 FromThisCoordY--;
                 if (chessBoard[i][FromThisCoordY] != null) return false;
-                FromThisCoordY--;
             }
         }
         return true;
@@ -184,7 +182,7 @@ public class GameSession {
         return Math.abs(coordsFrom.getX() - coordsTo.getX()) == Math.abs(coordsFrom.getY() - coordsTo.getY());
     }
 
-    private Boolean BishopsTurn(Figure figure, Cords coordsFrom, Cords coordsTo) {
+    private Boolean bishopsTurn(Figure figure, Cords coordsFrom, Cords coordsTo) {
         PlayerColour colour = figure.getColour();
         if (coordsDontChange(coordsFrom, coordsTo)) return false;
 
@@ -216,10 +214,8 @@ public class GameSession {
     }
 
     private Boolean queensTurn(Figure figure, Cords coordsFrom, Cords coordsTo){
-        PlayerColour colour = figure.getColour();
         if (coordsDontChange(coordsFrom, coordsTo)) return false;
-
-        return false;
+        return bishopsTurn(figure, coordsFrom, coordsTo) || rooksTurn(figure, coordsFrom, coordsTo);
     }
 
     private Boolean figuresTurn(Cords coordsFrom, Cords coordsTo) {
@@ -232,7 +228,7 @@ public class GameSession {
                 case Pawn:
                     return pawnsTurn(figure, coordsFrom, coordsTo);
                 case Bishop:
-                    return BishopsTurn(figure, coordsFrom, coordsTo);
+                    return bishopsTurn(figure, coordsFrom, coordsTo);
                 case Rook:
                     return rooksTurn(figure, coordsFrom, coordsTo);
                 case Knight:
