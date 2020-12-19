@@ -209,7 +209,11 @@ public class GameSession {
     private Boolean knightsTurn(Figure figure, Cords coordsFrom, Cords coordsTo){
         PlayerColour colour = figure.getColour();
         if (coordsDontChange(coordsFrom, coordsTo)) return false;
-
+        if ((Math.abs(coordsFrom.getX() - coordsTo.getX()) == 1 && Math.abs(coordsFrom.getY()-coordsTo.getY()) == 2 || Math.abs(coordsFrom.getX() - coordsTo.getX()) == 2 && Math.abs(coordsFrom.getY()-coordsTo.getY()) == 1)
+                && takeSquare(coordsTo, colour)){
+            moveFigure(figure, coordsFrom, coordsTo);
+            return true;
+        }
         return false;
     }
 
