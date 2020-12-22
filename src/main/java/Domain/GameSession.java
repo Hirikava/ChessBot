@@ -63,22 +63,36 @@ public class GameSession {
         if (coordsDontChange(coordsFrom, coordsTo)) return false;
 
         if (figure.getColour() == PlayerColour.White) {
+            //делаем один ход вперед, если поле пустое
             if (coordsTo.getX() - coordsFrom.getX() == 1 && coordsFrom.getY() == coordsTo.getY() && chessBoard[coordsTo.getX()][coordsTo.getY()] == null) {
+                if (coordsTo.getX() == 7){
+                    moveFigure(new Figure(Pieces.Queen, PlayerColour.White), coordsFrom, coordsTo);
+                    return true;
+                }
                 moveFigure(figure, coordsFrom, coordsTo);
                 return true;
             }
+            //если Х = 1, то мы можем сделать ход на две клетки вперёд и если клетка пуста
             if (coordsFrom.getY() == coordsTo.getY() && coordsTo.getX() - coordsFrom.getX() == 2 && chessBoard[coordsTo.getX()][coordsTo.getY()] == null && coordsFrom.getX() == 1){
                 moveFigure(figure, coordsFrom, coordsTo);
                 return true;
             }
 
             if (Math.abs(coordsTo.getX() - coordsFrom.getX()) < 2 && Math.abs(coordsFrom.getY() - coordsTo.getY()) < 2 && chessBoard[coordsTo.getX()][coordsTo.getY()] != null && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.Black) {
+                if (coordsTo.getX() == 7) {
+                    moveFigure(new Figure(Pieces.Queen, PlayerColour.White), coordsFrom, coordsTo);
+                    return true;
+                }
                 moveFigure(figure, coordsFrom, coordsTo);
                 return true;
             }
         }
         if (figure.getColour() == PlayerColour.Black) {
             if (coordsFrom.getX() - coordsTo.getX() == 1 && coordsFrom.getY() == coordsTo.getY() && chessBoard[coordsTo.getX()][coordsTo.getX()] == null) {
+                if (coordsTo.getX() == 0) {
+                    moveFigure(new Figure(Pieces.Queen, PlayerColour.Black), coordsFrom, coordsTo);
+                    return true;
+                }
                 moveFigure(figure, coordsFrom, coordsTo);
                 return true;
             }
@@ -87,6 +101,10 @@ public class GameSession {
                 return true;
             }
             if (Math.abs(coordsTo.getX() - coordsFrom.getX()) < 2 && Math.abs(coordsFrom.getY() - coordsTo.getY()) < 2 && chessBoard[coordsTo.getX()][coordsTo.getY()] != null && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.White) {
+                if (coordsTo.getX() == 0) {
+                    moveFigure(new Figure(Pieces.Queen, PlayerColour.Black), coordsFrom, coordsTo);
+                    return true;
+                }
                 moveFigure(figure, coordsFrom, coordsTo);
                 return true;
             }
