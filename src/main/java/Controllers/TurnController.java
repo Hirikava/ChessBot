@@ -2,6 +2,7 @@ package Controllers;
 
 import Domain.*;
 import Providers.MatchesDao;
+import ServerModels.GameInfo;
 import ServerModels.Match;
 import ServerModels.Player;
 import Service.ChessBordRenderer;
@@ -31,7 +32,7 @@ public class TurnController extends AuthorizedController {
     @Override
     protected void ExecuteCommandInternal(Message message, Player player) {
 
-        Triplet<Player, GameSession, PlayerColour> gameInfo = gameSessionsService.getGameSession(player);
+        GameInfo gameInfo = gameSessionsService.getGameSession(player);
         if (gameInfo == null) {
             sendMessageService.Send(new SendMessage(player.getChatId(), "У вас нет активной игровой сессии."));
             return;
@@ -43,26 +44,28 @@ public class TurnController extends AuthorizedController {
             return;
         }
 
-        GameSession gameSession = gameInfo.getValue1();
-        TurnResult turnResult = gameSession.MakeTurn(gameInfo.getValue2(), cords.getValue0(), cords.getValue1());
+        GameSession gameSession = gameInfo.getGameSession();
+        TurnResult turnResult = gameSession.MakeTurn(gameInfo.getPlayerColour(), cords.getValue0(), cords.getValue1());
 
         if (turnResult.getTurnError() != TurnError.None) {
             sendMessageService.Send(new SendMessage(player.getChatId(), "Неправильный ход."));
             return;
         }
-        Player oponent = gameInfo.getValue0();
+        Player opponent = gameInfo.getOpponent();
 
-        ByteArrayInputStream forPlayer = chessBordRenderer.RenderChessBoard(turnResult.getGameState().getBoard(), gameInfo.getValue2());
-        ByteArrayInputStream forOponent = chessBordRenderer.RenderChessBoard(turnResult.getGameState().getBoard(), gameInfo.getValue2() == PlayerColour.White ? PlayerColour.Black : PlayerColour.White);
-        sendMessageService.Send(new SendMessage(oponent.getChatId(), String.format("%s: %s", player.getUserName(), message.getText().split(" ")[1])));
-        sendMessageService.Send(new SendPhoto(player.getChatId(), new InputFile().setMedia(forPlayer, "board")));
-        sendMessageService.Send(new SendPhoto(oponent.getChatId(), new InputFile().setMedia(forOponent, "board")));
+        ByteArrayInputStream imageForPlayer = chessBordRenderer.RenderChessBoard(turnResult.getGameState().getBoard(), gameInfo.getPlayerColour());
+        ByteArrayInputStream imageForOpponent = chessBordRenderer.RenderChessBoard(turnResult.getGameState().getBoard(), gameInfo.getPlayerColour() == PlayerColour.White ? PlayerColour.Black : PlayerColour.White);
+        sendMessageService.Send(new SendMessage(opponent.getChatId(), String.format("%s: %s", player.getUserName(), message.getText().split(" ")[1])));
+        sendMessageService.Send(new SendPhoto(player.getChatId(), new InputFile().setMedia(imageForPlayer, "board")));
+        sendMessageService.Send(new SendPhoto(opponent.getChatId(), new InputFile().setMedia(imageForOpponent, "board")));
 
 
         if (turnResult.getGameState().getWinner().isPresent()) {
             PlayerColour winnerColor = turnResult.getGameState().getWinner().get();
-            matchesDao.Insert(new Match(player.getId(), oponent.getId(), gameInfo.getValue2() == winnerColor ? player.getId() : oponent.getId()));
-            gameSessionsService.endMatch(player, oponent);
+            matchesDao.Insert(new Match(player.getId(), opponent.getId(), gameInfo.getPlayerColour() == winnerColor ? player.getId() : opponent.getId()));
+            gameSessionsService.endMatch(player, opponent);
+            sendMessageService.Send(new SendMessage(opponent.getChatId(), String.format("%s одерживает победу", gameInfo.getPlayerColour() == winnerColor ? player.getUserName() : opponent.getUserName())));
+            sendMessageService.Send(new SendMessage(player.getChatId(), String.format("%s одерживает победу", gameInfo.getPlayerColour() == winnerColor ? player.getUserName() : opponent.getUserName())));
         }
     }
 

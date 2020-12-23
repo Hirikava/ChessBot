@@ -2,6 +2,7 @@ package Service;
 
 import Domain.GameSession;
 import Domain.PlayerColour;
+import ServerModels.GameInfo;
 import ServerModels.Player;
 import com.google.inject.Inject;
 import org.javatuples.Triplet;
@@ -24,28 +25,24 @@ public class GameSessionsService {
     @Inject
     private ChessBordRenderer chessBordRenderer;
 
-    private ConcurrentHashMap<Player, Triplet<Player, GameSession, PlayerColour>> gameSessionsMap
-            = new ConcurrentHashMap<Player, Triplet<Player, GameSession, PlayerColour>>();
+    private ConcurrentHashMap<Player, GameInfo> gameSessionsMap = new ConcurrentHashMap<Player, GameInfo>();
 
 
     public void startNewMatch(Player player1, Player player2) {
         GameSession gameSession = new GameSession();
 
-        gameSessionsMap.put(player1, new Triplet<Player, GameSession, PlayerColour>(player2, gameSession, PlayerColour.White));
-        gameSessionsMap.put(player2, new Triplet<Player, GameSession, PlayerColour>(player1, gameSession, PlayerColour.Black));
+        gameSessionsMap.put(player1, new GameInfo(player2, gameSession, PlayerColour.White));
+        gameSessionsMap.put(player2, new GameInfo(player1, gameSession, PlayerColour.Black));
 
-        SendMessage message = new SendMessage(player1.getChatId(), String.format("Ваш соперник %s.", player2.getUserName()));
-        SendMessage message2 = new SendMessage(player2.getChatId(), String.format("Ваш соперник %s.", player1.getUserName()));
-        sendMessageService.Send(message);
-        sendMessageService.Send(message2);
+
+        sendMessageService.Send(new SendMessage(player1.getChatId(), String.format("Ваш соперник %s.", player2.getUserName())));
+        sendMessageService.Send(new SendMessage(player2.getChatId(), String.format("Ваш соперник %s.", player1.getUserName())));
 
         ByteArrayInputStream forWhite = chessBordRenderer.RenderChessBoard(gameSession.createGameState().getBoard(), PlayerColour.White);
         ByteArrayInputStream forBlack = chessBordRenderer.RenderChessBoard(gameSession.createGameState().getBoard(), PlayerColour.Black);
 
-        SendPhoto sendPhoto = new SendPhoto(player1.getChatId(), new InputFile().setMedia(forWhite, "board"));
-        SendPhoto sendPhoto2 = new SendPhoto(player2.getChatId(), new InputFile().setMedia(forBlack, "board"));
-        sendMessageService.Send(sendPhoto);
-        sendMessageService.Send(sendPhoto2);
+        sendMessageService.Send(new SendPhoto(player1.getChatId(), new InputFile().setMedia(forWhite, "board")));
+        sendMessageService.Send(new SendPhoto(player2.getChatId(), new InputFile().setMedia(forBlack, "board")));
     }
 
     public void endMatch(Player player1, Player player2) {
@@ -53,7 +50,7 @@ public class GameSessionsService {
         gameSessionsMap.remove(player2);
     }
 
-    public Triplet<Player, GameSession, PlayerColour> getGameSession(Player player) {
+    public GameInfo getGameSession(Player player) {
         return gameSessionsMap.get(player);
     }
 }
