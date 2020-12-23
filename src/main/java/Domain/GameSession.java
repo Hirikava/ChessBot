@@ -3,6 +3,7 @@ package Domain;
 import org.checkerframework.checker.units.qual.C;
 import sun.net.www.protocol.http.HttpURLConnection;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class GameSession {
@@ -10,12 +11,27 @@ public class GameSession {
     Figure[][] chessBoard;
     Cords CoordsOfWhiteKing;
     Cords CoordsOfBlackKing;
+    ArrayList<Cords> CoordsOfWhiteFigures= new ArrayList<Cords>();
+    ArrayList<Cords>CoordsOfBlackFigures = new ArrayList<Cords>();
 
     public GameSession() {
         Turn = PlayerColour.White;
 
         CoordsOfWhiteKing = new Cords(0,4);
         CoordsOfBlackKing = new Cords(7, 4);
+
+
+       for (int i = 0; i < 3; i++){
+           for (int j  = 0; j < 8; j++){
+               CoordsOfWhiteFigures.add(new Cords(i, j));
+           }
+       }
+
+        for (int i = 6; i < 8; i++){
+            for (int j  = 0; j < 8; j++){
+                CoordsOfWhiteFigures.add(new Cords(i, j));
+            }
+        }
 
         //Init black pieces
         chessBoard = new Figure[8][8];
@@ -70,9 +86,38 @@ public class GameSession {
     }
 
     private void moveFigure(Figure figure, Cords coordsFrom, Cords coordsTo){
+        if (chessBoard[coordsTo.getX()][coordsTo.getY()] == null) {
+            if (figure.getColour() == PlayerColour.White) changeCoordsInListOfCoords(CoordsOfWhiteFigures, coordsFrom, coordsTo);
+            else changeCoordsInListOfCoords(CoordsOfBlackFigures, coordsFrom, coordsTo);
+        }
+
+        if (chessBoard[coordsTo.getX()][coordsTo.getY()] != null) {
+            if (figure.getColour() == PlayerColour.White) deleteCoordsInListOfCoords(CoordsOfBlackFigures, coordsTo);
+            else deleteCoordsInListOfCoords(CoordsOfWhiteFigures, coordsTo);
+        }
+
         chessBoard[coordsFrom.getX()][coordsFrom.getY()] = null;
         chessBoard[coordsTo.getX()][coordsTo.getY()] = figure;
     }
+
+
+    private void changeCoordsInListOfCoords(ArrayList<Cords> list, Cords coordsFrom, Cords coordsTo){
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getX() == coordsFrom.getX() && list.get(i).getY() == coordsFrom.getY()) {
+                list.set(i, coordsTo);
+            }
+        }
+
+    }
+
+    private void deleteCoordsInListOfCoords(ArrayList<Cords> list, Cords coords) {
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getX() == coords.getX() && list.get(i).getY() == coords.getY()) {
+                list.remove(i);
+            }
+        }
+    }
+
 
     //можем занять клетку, если она пустая или на ней находится фигура противника
     private Boolean takeSquare(Cords coordsTo, PlayerColour colour){
@@ -271,20 +316,20 @@ public class GameSession {
     }
 
 
-    private void isCheck(Figure figure, Cords coordsTo){
-        PlayerColour colour = figure.getColour();
-        /*if (colour == PlayerColour.White) {
-            return chooseFiguresTurn(figure, coordsTo, CoordsOfBlackKing);
+    private Boolean isCheck(){
+        if (Turn == PlayerColour.White) {
+            for(Cords coords : CoordsOfWhiteFigures){
+                if (chooseFiguresTurn(chessBoard[coords.getX()][coords.getY()], coords, CoordsOfBlackKing)) {
+                    return true;
+                }
+            }
         }
         else {
-            return chooseFiguresTurn(figure, coordsTo, CoordsOfBlackKing);
-        }*/
-       /* if (colour == PlayerColour.White && chooseFiguresTurn(figure, coordsTo, CoordsOfBlackKing)){
-            System.out.println("Check!");
+            for(Cords coords : CoordsOfBlackFigures){
+                if (chooseFiguresTurn(chessBoard[coords.getX()][coords.getY()], coords, CoordsOfWhiteKing)) return true;
+            }
         }
-        if (colour == PlayerColour.Black && chooseFiguresTurn(figure, coordsTo, CoordsOfWhiteKing)){
-            System.out.println("Check!");
-        }*/
+        return false;
     }
 
     private Boolean figuresTurn(Cords coordsFrom, Cords coordsTo) {
@@ -293,6 +338,7 @@ public class GameSession {
         else{
             if (chooseFiguresTurn(figure, coordsFrom, coordsTo)){
                 moveFigure(figure, coordsFrom, coordsTo);
+                if (isCheck()) System.out.println("check!");
                 return true;
             }
         }
