@@ -85,6 +85,6 @@ public class TurnController extends AuthorizedController {
     private Cords GetCoordinate(String text) {
         if (text.length() != 2)
             return null;
-        return new Cords(text.charAt(0) - 'a', text.charAt(1) - '1');
+        return new Cords(text.charAt(1) - '1', text.charAt(0) - 'a');
     }
 }

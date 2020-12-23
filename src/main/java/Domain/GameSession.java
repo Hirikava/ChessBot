@@ -1,6 +1,7 @@
 package Domain;
 
 import org.checkerframework.checker.units.qual.C;
+import sun.net.www.protocol.http.HttpURLConnection;
 
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class GameSession {
     }
 
     public GameState createGameState() {
-        return new GameState(Optional.of(Turn), chessBoard.clone());
+        return new GameState(Optional.empty(), chessBoard.clone());
     }
 
     private Boolean chooseFiguresTurn(Figure figure, Cords coordsFrom, Cords coordsTo){
@@ -302,12 +303,22 @@ public class GameSession {
         return coords.getX() < 0 || coords.getX() > 7 || coords.getY() < 0 || coords.getY() > 7; //проверили,что координаты в правильном диапазоне
     }
 
+    private void passTurn()
+    {
+        if(Turn == PlayerColour.Black)
+            Turn = PlayerColour.White;
+        else
+            Turn = PlayerColour.Black;
+    }
+
     public TurnResult MakeTurn(PlayerColour colour, Cords coordsFrom, Cords coordsTo) {
         if (colour != Turn)
             return new TurnResult(TurnError.AnotherPlayerTurn, createGameState());
         if (CheckCords(coordsFrom) || CheckCords(coordsTo))
             return new TurnResult(TurnError.WrongCoords, createGameState());
-        if (!figuresTurn(coordsFrom, coordsTo)) return new TurnResult(TurnError.NotAFigure, createGameState());
+        if (!figuresTurn(coordsFrom, coordsTo))
+            return new TurnResult(TurnError.NotAFigure, createGameState());
+        passTurn();
         return new TurnResult(TurnError.None, createGameState());
     }
 }
