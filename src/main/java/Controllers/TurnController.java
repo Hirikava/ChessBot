@@ -17,10 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.ByteArrayInputStream;
 
-public class TurnController extends AuthorizedController {
+public class TurnController extends GameSessionController {
 
-    @Inject
-    private GameSessionsService gameSessionsService;
 
     @Inject
     private ChessBordRenderer chessBordRenderer;
@@ -30,14 +28,7 @@ public class TurnController extends AuthorizedController {
 
 
     @Override
-    protected void ExecuteCommandInternal(Message message, Player player) {
-
-        GameInfo gameInfo = gameSessionsService.getGameSession(player);
-        if (gameInfo == null) {
-            sendMessageService.Send(new SendMessage(player.getChatId(), "У вас нет активной игровой сессии."));
-            return;
-        }
-
+    protected void ExecuteCommandInternal(Message message, Player player, GameInfo gameInfo) {
         Pair<Cords, Cords> cords = GetCordsFromMessage(message.getText());
         if (cords == null) {
             sendMessageService.Send(new SendMessage(player.getChatId(), "Введены неверные координаты."));

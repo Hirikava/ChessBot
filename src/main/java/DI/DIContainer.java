@@ -31,7 +31,6 @@ public class DIContainer extends AbstractModule {
         bind(GameSessionsService.class).toInstance(new GameSessionsService());
         bind(ChessBot.class).toInstance(chessBot);
         bind(ISendMessageService.class).toInstance(chessBot);
-        bind(PlayerLockService.class).toInstance(new PlayerLockService());
         bind(SearchQueueService.class).toInstance(new SearchQueueService());
     }
 }
