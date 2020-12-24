@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public class GameSession {
 
-    private PlayerColour Turn;
+    private PlayerColour turn;
     PlayerColour Winner;
     Figure[][] chessBoard;
 
     public GameSession() {
-        Turn = PlayerColour.White;
+        turn = PlayerColour.White;
 
         //Init black pieces
         chessBoard = new Figure[8][8];
@@ -240,7 +240,7 @@ public class GameSession {
     private Boolean isCheck(Cords coordsFrom, Cords coordsTo) {
         Figure[][] copyBoard = copyChessBoard();
         moveFigure(copyBoard, coordsFrom, coordsTo);
-        if (Turn == PlayerColour.White) {
+        if (turn == PlayerColour.White) {
             Cords cordsOfKing = getCordsOfKing(copyBoard, PlayerColour.White);
             for (Cords enemyFigure : getAllFiguresOfChosenColor(copyBoard, PlayerColour.Black)) {
                 if (chooseFiguresTurn(copyBoard, copyBoard[enemyFigure.getX()][enemyFigure.getY()], enemyFigure, cordsOfKing)) {
@@ -260,7 +260,7 @@ public class GameSession {
 
     private Boolean isCorrectTurn(Cords coordsFrom, Cords coordsTo) {
         Figure figure = chessBoard[coordsFrom.getX()][coordsFrom.getY()];
-        return figure != null && figure.getColour() == Turn && chooseFiguresTurn(chessBoard, figure, coordsFrom, coordsTo) && !isCheck(coordsFrom, coordsTo);
+        return figure != null && figure.getColour() == turn && chooseFiguresTurn(chessBoard, figure, coordsFrom, coordsTo) && !isCheck(coordsFrom, coordsTo);
     }
 
     private Boolean CheckCords(Cords coords) {
@@ -268,26 +268,26 @@ public class GameSession {
     }
 
     private void passTurn() {
-        if (Turn == PlayerColour.Black)
-            Turn = PlayerColour.White;
+        if (turn == PlayerColour.Black)
+            turn = PlayerColour.White;
         else
-            Turn = PlayerColour.Black;
+            turn = PlayerColour.Black;
     }
 
 
     private void checkForCheckMate() {
-        ArrayList<Cords> cords = getAllFiguresOfChosenColor(chessBoard, Turn);
+        ArrayList<Cords> cords = getAllFiguresOfChosenColor(chessBoard, turn);
         for (Cords cordsFrom : cords)
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     if (isCorrectTurn(cordsFrom, new Cords(i, j)))
                         return;
 
-        Winner = Turn == PlayerColour.Black ? PlayerColour.White : PlayerColour.Black;
+        Winner = turn == PlayerColour.Black ? PlayerColour.White : PlayerColour.Black;
     }
 
     public synchronized TurnResult MakeTurn(PlayerColour colour, Cords coordsFrom, Cords coordsTo) {
-        if (colour != Turn)
+        if (colour != turn)
             return new TurnResult(TurnError.AnotherPlayerTurn, createGameState());
         if (CheckCords(coordsFrom) || CheckCords(coordsTo))
             return new TurnResult(TurnError.WrongCoords, createGameState());
