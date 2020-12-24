@@ -18,7 +18,7 @@ public class EnqueueController extends AuthorizedController {
     @Override
     public void ExecuteAuthorizedCommand(Message message, Player player) {
         if (playerResolverService.IsPlayerBusy(player)) {
-            sendMessageService.SendMessage(player.getChatId(), "Вы уже совершаете действие, завершите его перед тем как нчать новое.");
+            sendMessageService.SendMessage(player.getChatId(), "Вы уже находитесь в очереди или играете матч.");
             return;
         }
 

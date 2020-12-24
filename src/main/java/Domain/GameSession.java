@@ -8,6 +8,7 @@ import java.util.Optional;
 public class GameSession {
 
     private PlayerColour Turn;
+    PlayerColour Winner;
     Figure[][] chessBoard;
 
     public GameSession() {
@@ -39,6 +40,8 @@ public class GameSession {
 
         for (int j = 0; j < 8; j++)
             chessBoard[1][j] = new Figure(Pieces.Pawn, PlayerColour.White);
+
+        Winner = null;
     }
 
     private Figure[][] copyChessBoard() {
@@ -50,7 +53,7 @@ public class GameSession {
     }
 
     public GameState createGameState() {
-        return new GameState(Optional.empty(), chessBoard.clone());
+        return new GameState(Optional.ofNullable(Winner), chessBoard.clone());
     }
 
     private Boolean chooseFiguresTurn(Figure[][] board, Figure figure, Cords coordsFrom, Cords coordsTo) {
@@ -109,37 +112,40 @@ public class GameSession {
         if (figure.getColour() == PlayerColour.White) {
             //делаем один ход вперед, если поле пустое
             if (coordsTo.getX() - coordsFrom.getX() == 1 && coordsFrom.getY() == coordsTo.getY() && board[coordsTo.getX()][coordsTo.getY()] == null) {
-                if (coordsTo.getX() == 7) {
-                    return true;
-                }
                 return true;
             }
             //если Х = 1, то мы можем сделать ход на две клетки вперёд и если клетка пуста
-            if (coordsFrom.getY() == coordsTo.getY() && coordsTo.getX() - coordsFrom.getX() == 2 && board[coordsTo.getX()][coordsTo.getY()] == null && coordsFrom.getX() == 1) {
+            if (coordsFrom.getY() == coordsTo.getY()
+                    && coordsTo.getX() - coordsFrom.getX() == 2
+                    && board[coordsTo.getX()][coordsTo.getY()] == null
+                    && board[coordsTo.getX() - 1][coordsTo.getY()] == null
+                    && coordsFrom.getX() == 1) {
                 return true;
             }
 
-            if (Math.abs(coordsTo.getX() - coordsFrom.getX()) < 2 && Math.abs(coordsFrom.getY() - coordsTo.getY()) < 2 && board[coordsTo.getX()][coordsTo.getY()] != null && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.Black) {
-                if (coordsTo.getX() == 7) {
-                    return true;
-                }
+            if (Math.abs(coordsTo.getX() - coordsFrom.getX()) == 1 && Math.abs(coordsFrom.getY() - coordsTo.getY()) == 1 && board[coordsTo.getX()][coordsTo.getY()] != null && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.Black) {
                 return true;
             }
         }
         if (figure.getColour() == PlayerColour.Black) {
-            if (coordsFrom.getX() - coordsTo.getX() == 1 && coordsFrom.getY() == coordsTo.getY() && board[coordsTo.getX()][coordsTo.getX()] == null) {
-                if (coordsTo.getX() == 0) {
-                    return true;
-                }
+
+            if (coordsTo.getX() - coordsFrom.getX() == -1
+                    && coordsFrom.getY() == coordsTo.getY()
+                    && board[coordsTo.getX()][coordsTo.getX()] == null) {
                 return true;
             }
-            if (coordsFrom.getY() == coordsTo.getY() && coordsFrom.getX() - coordsTo.getX() == 2 && board[coordsTo.getX()][coordsTo.getY()] == null && coordsFrom.getX() == 6) {
+            if (coordsFrom.getY() == coordsTo.getY()
+                    && coordsTo.getX() - coordsFrom.getX() == -2
+                    && board[coordsTo.getX()][coordsTo.getY()] == null
+                    && board[coordsTo.getX() + 1][coordsTo.getY()] == null
+                    && coordsFrom.getX() == 6) {
                 return true;
             }
-            if (Math.abs(coordsTo.getX() - coordsFrom.getX()) < 2 && Math.abs(coordsFrom.getY() - coordsTo.getY()) < 2 && board[coordsTo.getX()][coordsTo.getY()] != null && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.White) {
-                if (coordsTo.getX() == 0) {
-                    return true;
-                }
+
+            if (coordsTo.getX() - coordsFrom.getX() == -1 &&
+                    Math.abs(coordsFrom.getY() - coordsTo.getY()) == 1
+                    && board[coordsTo.getX()][coordsTo.getY()] != null
+                    && chessBoard[coordsTo.getX()][coordsTo.getY()].getColour() == PlayerColour.White) {
                 return true;
             }
         }
@@ -188,7 +194,7 @@ public class GameSession {
 
         int cordX = cordsFrom.getX() + dx;
         int cordY = cordsFrom.getY() + dy;
-        while(cordX != cordsTo.getX() && cordY != cordsTo.getY()) {
+        while (cordX != cordsTo.getX() && cordY != cordsTo.getY()) {
             if (board[cordX][cordY] != null) return false;
             cordX += dx;
             cordY += dy;
@@ -252,9 +258,9 @@ public class GameSession {
         return false;
     }
 
-    private Boolean figuresTurn(Cords coordsFrom, Cords coordsTo) {
+    private Boolean isCorrectTurn(Cords coordsFrom, Cords coordsTo) {
         Figure figure = chessBoard[coordsFrom.getX()][coordsFrom.getY()];
-        return figure != null && chooseFiguresTurn(chessBoard, figure, coordsFrom, coordsTo) && !isCheck(coordsFrom, coordsTo);
+        return figure != null && figure.getColour() == Turn && chooseFiguresTurn(chessBoard, figure, coordsFrom, coordsTo) && !isCheck(coordsFrom, coordsTo);
     }
 
     private Boolean CheckCords(Cords coords) {
@@ -268,15 +274,28 @@ public class GameSession {
             Turn = PlayerColour.Black;
     }
 
+
+    private void checkForCheckMate() {
+        ArrayList<Cords> cords = getAllFiguresOfChosenColor(chessBoard, Turn);
+        for (Cords cordsFrom : cords)
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    if (isCorrectTurn(cordsFrom, new Cords(i, j)))
+                        return;
+
+        Winner = Turn == PlayerColour.Black ? PlayerColour.White : PlayerColour.Black;
+    }
+
     public synchronized TurnResult MakeTurn(PlayerColour colour, Cords coordsFrom, Cords coordsTo) {
         if (colour != Turn)
             return new TurnResult(TurnError.AnotherPlayerTurn, createGameState());
         if (CheckCords(coordsFrom) || CheckCords(coordsTo))
             return new TurnResult(TurnError.WrongCoords, createGameState());
-        if (!figuresTurn(coordsFrom, coordsTo))
+        if (!isCorrectTurn(coordsFrom, coordsTo))
             return new TurnResult(TurnError.WrongTurn, createGameState());
         moveFigure(chessBoard, coordsFrom, coordsTo);
         passTurn();
+        checkForCheckMate();
         return new TurnResult(TurnError.None, createGameState());
     }
 }
