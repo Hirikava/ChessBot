@@ -32,6 +32,7 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
         } catch (Exception exception) {
             logger.severe(String.format("Failed to process request from User:{%s} and message: {%s} request failed with following error:{%s}",
                     update.getMessage().getFrom().getId(), update.getMessage().getText(), ExceptionUtils.exceptionStackTraceAsString(exception)));
+            SendMessage(update.getMessage().getChat().toString(), "Произошла ощибка во время обработки запроса.");
             exception.printStackTrace();
         }
     }
