@@ -13,6 +13,6 @@ public class UnknownCommandController implements IController {
 
     @Override
     public void ExecuteCommand(Message message) {
-        sendMessageService.Send(new SendMessage(message.getChatId().toString(), "Неизвсетная комманда :("));
+        sendMessageService.SendMessage(message.getChatId().toString(), "Неизвсетная комманда.");
     }
 }

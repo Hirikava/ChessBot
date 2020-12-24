@@ -1,12 +1,10 @@
 package Service;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-
-import java.io.Serializable;
+import java.io.ByteArrayInputStream;
 
 public interface ISendMessageService {
-    void Send(SendMessage message);
 
-    void Send(SendPhoto message);
+    void SendMessage(String chatId, String message);
+
+    void SendPhoto(String chatId, ByteArrayInputStream byteArrayInputStream, String mediaFileName);
 }

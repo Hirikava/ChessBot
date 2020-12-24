@@ -10,13 +10,15 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.logging.Logger;
 
-public class ChessBordRenderer {
-
+public class ChessBordRenderer implements IChessBoardRenderer {
 
     @Inject
-    IChessGameAssetProvider chessGameAssetProvider;
+    private IChessGameAssetProvider chessGameAssetProvider;
 
+    @Inject
+    private Logger logger;
 
     public ByteArrayInputStream RenderChessBoard(Figure[][] chessBoard, PlayerColour colour) {
 
@@ -38,8 +40,10 @@ public class ChessBordRenderer {
                 if (chessBoard[i][j] != null) {
                     Pair<Integer, Integer> drawingCords = GetDrawingCoordinates(boardWidth, boardHeight, colour, i, j);
                     Image asset = chessGameAssetProvider.getAsset(chessBoard[i][j].getFiguresName(), chessBoard[i][j].getColour());
-                    if (asset == null)
+                    if (asset == null) {
+                        logger.severe(String.format("Failed to get asset with Name:{%s}", chessBoard[i][j].getFiguresName().toString()));
                         return null;
+                    }
                     graphics.drawImage(asset, drawingCords.getValue0(), drawingCords.getValue1(), null);
                 }
 
@@ -52,24 +56,23 @@ public class ChessBordRenderer {
 
         try {
             ImageIO.write(bufferedImage, "png", output);
-            ByteArrayInputStream bais = new ByteArrayInputStream(output.toByteArray(), 0, output.size());
-            return bais;
+            return new ByteArrayInputStream(output.toByteArray(), 0, output.size());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe(String.format("Failed to render board with following message:{%s}", e.getMessage()));
             return null;
         }
 
     }
 
 
-    public Pair GetDrawingCoordinates(int boardWidth, int boardHeight, PlayerColour playerColour, int row, int column) {
+    public Pair<Integer, Integer> GetDrawingCoordinates(int boardWidth, int boardHeight, PlayerColour playerColour, int row, int column) {
         switch (playerColour) {
             case Black:
-                return new Pair(boardWidth - (boardWidth / 8) * (column + 1), (boardHeight / 8) * row);
+                return new Pair<Integer, Integer>(boardWidth - (boardWidth / 8) * (column + 1), (boardHeight / 8) * row);
             case White:
-                return new Pair((boardWidth / 8) * column, boardHeight - (boardHeight / 8) * (row + 1));
+                return new Pair<Integer, Integer>((boardWidth / 8) * column, boardHeight - (boardHeight / 8) * (row + 1));
         }
 
-        return new Pair((boardWidth / 8) * column, (boardHeight / 8) * row);
+        return new Pair<Integer, Integer>((boardWidth / 8) * column, (boardHeight / 8) * row);
     }
 }

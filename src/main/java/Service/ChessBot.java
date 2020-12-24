@@ -3,35 +3,37 @@ package Service;
 import Controllers.ControllerFactory;
 import Controllers.IController;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.glassfish.jersey.internal.util.ExceptionUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.io.ByteArrayInputStream;
+import java.util.logging.Logger;
 
 public class ChessBot extends TelegramLongPollingBot implements ISendMessageService {
 
     @Inject
     private ControllerFactory controllerFactory;
-    @Inject
-    private PlayerLockService playerLockService;
+
+    @Inject @Named("logger")
+    private Logger logger;
 
 
     @Override
     public void onUpdateReceived(Update update) {
-        Lock lock = new ReentrantLock();
         try {
-            Integer userId = update.getMessage().getFrom().getId();
-            lock = playerLockService.getPlayerLock(userId);
             IController controller = controllerFactory.GetController(update.getMessage());
             controller.ExecuteCommand(update.getMessage());
         } catch (Exception exception) {
+            logger.severe(String.format("Failed to process request from User:{%s} and message: {%s} request failed with following error:{%s}",
+                    update.getMessage().getFrom().getId(), update.getMessage().getText(), ExceptionUtils.exceptionStackTraceAsString(exception)));
+            SendMessage(update.getMessage().getChat().toString(), "Произошла ощибка во время обработки запроса.");
             exception.printStackTrace();
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -47,21 +49,22 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
         return "PvP Chess Bot";
     }
 
-
     @Override
-    public void Send(SendMessage message) {
+    public void SendMessage(String chatId, String message) {
         try {
-            execute(message);
+            execute(new SendMessage(chatId, message));
         } catch (TelegramApiException telegramApiException) {
+            logger.severe(String.format("Failed to send Message:{%s} to User:{%s}", message, chatId));
             telegramApiException.printStackTrace();
         }
     }
 
     @Override
-    public void Send(SendPhoto message) {
+    public void SendPhoto(String chatId, ByteArrayInputStream byteArrayInputStream, String mediaFileName) {
         try {
-            execute(message);
+            execute(new SendPhoto(chatId, new InputFile().setMedia(byteArrayInputStream, mediaFileName)));
         } catch (TelegramApiException telegramApiException) {
+            logger.severe(String.format("Failed to send photo to User:{%s}", chatId));
             telegramApiException.printStackTrace();
         }
     }

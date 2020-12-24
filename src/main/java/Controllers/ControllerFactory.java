@@ -26,6 +26,8 @@ public class ControllerFactory {
             return injector.getInstance(ConcedeController.class);
         if (text.equals("/history"))
             return injector.getInstance(HistoryController.class);
+        if(text.startsWith("/bug "))
+            return injector.getInstance(BugInfoController.class);
         return injector.getInstance(UnknownCommandController.class);
     }
 }

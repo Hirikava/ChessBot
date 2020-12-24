@@ -2,6 +2,8 @@ package Service;
 
 import Domain.Pieces;
 import Domain.PlayerColour;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,9 +11,12 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
+import java.util.logging.Logger;
 
 public class ChessGameAssetProvider implements IChessGameAssetProvider {
 
+    @Inject @Named("logger")
+    private Logger logger;
 
     private Image whiteKingImage;
     private Image whitePawnImage;
@@ -48,7 +53,7 @@ public class ChessGameAssetProvider implements IChessGameAssetProvider {
             whiteKnightImage = makeImageTransparent(ImageIO.read(classLoader.getResourceAsStream("knight_white.png")), transparentColor);
             whitePawnImage = makeImageTransparent(ImageIO.read(classLoader.getResourceAsStream("pawn_white.png")), transparentColor);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe(String.format("Failed to load assets with following message:{%s}", e.getMessage()));
         }
 
     }

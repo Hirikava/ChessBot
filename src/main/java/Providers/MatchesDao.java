@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class MatchesDao implements GetDataAccessMethod<List<Match>, Integer>, InsertDataAccessMethod<Match> {
+public class MatchesDao implements GetSequenceAccessMethod<Match, Integer>, InsertDataAccessMethod<Match> {
 
     @Inject
     private DataSource dataSource;
@@ -22,13 +22,13 @@ public class MatchesDao implements GetDataAccessMethod<List<Match>, Integer>, In
             + DataBaseConstants.FieldNames.WinnerId + ") VALUES (?, ?, ?)";
 
     @Override
-    public Optional<List<Match>> Get(Integer searchObject) {
+    public ArrayList<Match> Get(Integer searchObject) {
         JdbcTemplate template = new JdbcTemplate(dataSource);
         return template.query(searchByIdSqlQuery, new Object[]{searchObject, searchObject}, (rs) -> {
-            List<Match> matches = new ArrayList<Match>();
+            ArrayList<Match> matches = new ArrayList<Match>();
             while (rs.next())
                 matches.add(new Match(rs.getInt("PlayerId1"), rs.getInt("PlayerId2"), rs.getInt("WinnerId")));
-            return Optional.ofNullable(matches);
+            return matches;
         });
     }
 

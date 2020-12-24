@@ -1,35 +1,20 @@
 package Controllers;
 
-import Domain.GameSession;
-import Domain.PlayerColour;
 import Providers.MatchesDao;
+import ServerModels.GameInfo;
 import ServerModels.Match;
 import ServerModels.Player;
-import Service.GameSessionsService;
 import com.google.inject.Inject;
-import org.javatuples.Triplet;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-public class ConcedeController extends AuthorizedController {
-
-    @Inject
-    private GameSessionsService gameSessionsService;
-
+public class ConcedeController extends GameSessionController {
     @Inject
     private MatchesDao matchesDao;
 
     @Override
-    protected void ExecuteCommandInternal(Message message, Player player) {
-        Triplet<Player, GameSession, PlayerColour> gameInfo = gameSessionsService.getGameSession(player);
-
-        if (gameInfo == null) {
-            sendMessageService.Send(new SendMessage(player.getChatId(), "У вас нет активной игровой сессии."));
-            return;
-        }
-
-        gameSessionsService.endMatch(player, gameInfo.getValue0());
-        matchesDao.Insert(new Match(player.getId(), gameInfo.getValue0().getId(), gameInfo.getValue0().getId()));
-        sendMessageService.Send(new SendMessage(gameInfo.getValue0().getChatId(), String.format("%s сдался", player.getUserName())));
+    protected void ExecuteGameSessionCommand(Message message, Player player, GameInfo gameInfo) {
+        gameSessionsService.endMatch(player, gameInfo.getOpponent());
+        matchesDao.Insert(new Match(player.getId(), gameInfo.getOpponent().getId(), gameInfo.getOpponent().getId()));
+        sendMessageService.SendMessage(gameInfo.getOpponent().getChatId(), String.format("%s сдался", player.getUserName()));
     }
 }
