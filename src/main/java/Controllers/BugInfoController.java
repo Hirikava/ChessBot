@@ -1,6 +1,6 @@
 package Controllers;
 
-import Providers.BugInfoDao;
+import Providers.BugInfoRepository;
 import ServerModels.BugInfo;
 import ServerModels.Player;
 import Service.ISendMessageService;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class BugInfoController extends AuthorizedController {
     @Inject
-    private BugInfoDao bugInfoDao;
+    private BugInfoRepository bugInfoDao;
 
     @Inject @Named("logger")
     private Logger logger;

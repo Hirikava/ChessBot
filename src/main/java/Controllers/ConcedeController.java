@@ -1,6 +1,6 @@
 package Controllers;
 
-import Providers.MatchesDao;
+import Providers.MatchesRepository;
 import ServerModels.GameInfo;
 import ServerModels.Match;
 import ServerModels.Player;
@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 public class ConcedeController extends GameSessionController {
     @Inject
-    private MatchesDao matchesDao;
+    private MatchesRepository matchesDao;
 
     @Override
     protected void ExecuteGameSessionCommand(Message message, Player player, GameInfo gameInfo) {

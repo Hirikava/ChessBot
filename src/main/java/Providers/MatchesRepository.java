@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class MatchesDao implements GetSequenceAccessMethod<Match, Integer>, InsertDataAccessMethod<Match> {
+public class MatchesRepository implements GetSequenceAccessMethod<Match, Integer>, InsertDataAccessMethod<Match> {
 
     @Inject
     private DataSource dataSource;

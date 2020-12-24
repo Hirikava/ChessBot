@@ -1,6 +1,6 @@
 package Controllers;
 
-import Providers.MatchesDao;
+import Providers.MatchesRepository;
 import ServerModels.Match;
 import ServerModels.Player;
 import Service.ISendMessageService;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public class HistoryController extends AuthorizedController {
 
     @Inject
-    private MatchesDao matchesDao;
+    private MatchesRepository matchesDao;
 
     @Inject
     private ISendMessageService sendMessageService;

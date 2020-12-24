@@ -1,6 +1,6 @@
 import AppStart.DataBaseConfiguration;
 
-import Providers.PlayerDao;
+import Providers.PlayerRepository;
 import ServerModels.Player;
 import com.google.inject.Injector;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 public class PlayerDaoTests {
 
-    private PlayerDao playerDao;
+    private PlayerRepository playerDao;
     private Injector injector = TestEnvironment.CreateInjector();
 
     @BeforeEach
     public void SetUp() {
         DataBaseConfiguration.Configure(injector.getInstance(DataSource.class));
-        playerDao = injector.getInstance(PlayerDao.class);
+        playerDao = injector.getInstance(PlayerRepository.class);
     }
 
     private static Stream<Arguments> providePlayersForInsertGetTest() {

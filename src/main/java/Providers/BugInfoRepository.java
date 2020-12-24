@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-public class BugInfoDao implements InsertDataAccessMethod<BugInfo> {
+public class BugInfoRepository implements InsertDataAccessMethod<BugInfo> {
 
     @Inject
     private DataSource dataSource;

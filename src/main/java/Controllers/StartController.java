@@ -1,6 +1,6 @@
 package Controllers;
 
-import Providers.PlayerDao;
+import Providers.PlayerRepository;
 import ServerModels.Player;
 import Service.ISendMessageService;
 import com.google.inject.name.Named;
@@ -14,7 +14,7 @@ public class StartController implements IController {
     @Inject
     private ISendMessageService sendMessageService;
     @Inject
-    private PlayerDao playerDao;
+    private PlayerRepository playerDao;
 
     @Inject @Named("logger")
     private Logger logger;

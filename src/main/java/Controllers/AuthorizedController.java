@@ -1,6 +1,6 @@
 package Controllers;
 
-import Providers.PlayerDao;
+import Providers.PlayerRepository;
 import ServerModels.Player;
 import Service.ISendMessageService;
 import com.google.inject.Inject;
@@ -15,7 +15,7 @@ public class AuthorizedController implements IController {
     protected ISendMessageService sendMessageService;
 
     @Inject
-    protected PlayerDao playerDao;
+    protected PlayerRepository playerDao;
 
     @Override
     public void ExecuteCommand(Message message) {

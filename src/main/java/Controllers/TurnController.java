@@ -1,7 +1,7 @@
 package Controllers;
 
 import Domain.*;
-import Providers.MatchesDao;
+import Providers.MatchesRepository;
 import ServerModels.GameInfo;
 import ServerModels.Match;
 import ServerModels.Player;
@@ -21,7 +21,7 @@ public class TurnController extends GameSessionController {
     private ChessBordRenderer chessBordRenderer;
 
     @Inject
-    private MatchesDao matchesDao;
+    private MatchesRepository matchesDao;
 
     @Inject @Named("logger")
     private Logger logger;
