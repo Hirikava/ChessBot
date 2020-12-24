@@ -16,7 +16,7 @@ public class EnqueueController extends AuthorizedController {
     private SearchQueueService searchQueueService;
 
     @Override
-    public void ExecuteCommandInternal(Message message, Player player) {
+    public void ExecuteAuthorizedCommand(Message message, Player player) {
         if (playerResolverService.IsPlayerBusy(player)) {
             sendMessageService.SendMessage(player.getChatId(), "Вы уже совершаете действие, завершите его перед тем как нчать новое.");
             return;

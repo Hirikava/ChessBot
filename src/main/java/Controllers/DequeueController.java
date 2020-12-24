@@ -12,7 +12,7 @@ public class DequeueController extends AuthorizedController {
 
 
     @Override
-    public void ExecuteCommandInternal(Message message, Player player) {
+    public void ExecuteAuthorizedCommand(Message message, Player player) {
         if (!searchQueueService.isPlayerBusy(player)) {
             sendMessageService.SendMessage(message.getChatId().toString(), "Вы не находится в очереди подбора соперников. Для того чтобы встать в очерель воспользуйтесь командой /play");
             return;

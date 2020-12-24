@@ -12,7 +12,7 @@ public class ConcedeController extends GameSessionController {
     private MatchesDao matchesDao;
 
     @Override
-    protected void ExecuteCommandInternal(Message message, Player player, GameInfo gameInfo) {
+    protected void ExecuteGameSessionCommand(Message message, Player player, GameInfo gameInfo) {
         gameSessionsService.endMatch(player, gameInfo.getOpponent());
         matchesDao.Insert(new Match(player.getId(), gameInfo.getOpponent().getId(), gameInfo.getOpponent().getId()));
         sendMessageService.SendMessage(gameInfo.getOpponent().getChatId(), String.format("%s сдался", player.getUserName()));

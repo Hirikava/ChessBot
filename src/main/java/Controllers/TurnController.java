@@ -28,7 +28,7 @@ public class TurnController extends GameSessionController {
 
 
     @Override
-    protected void ExecuteCommandInternal(Message message, Player player, GameInfo gameInfo) {
+    protected void ExecuteGameSessionCommand(Message message, Player player, GameInfo gameInfo) {
         Pair<Cords, Cords> cords = GetCordsFromMessage(message.getText());
         if (cords == null) {
             sendMessageService.SendMessage(player.getChatId(), "Введены неверные координаты.");

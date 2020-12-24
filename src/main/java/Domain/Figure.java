@@ -9,6 +9,12 @@ public class Figure {
         this.colour = colour;
     }
 
+    public Figure(Figure other)
+    {
+        this.FiguresName = other.getFiguresName();
+        this.colour = other.getColour();
+    }
+
 
     public Pieces getFiguresName(){
         return FiguresName;

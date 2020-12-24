@@ -21,7 +21,7 @@ public class HistoryController extends AuthorizedController {
     private ISendMessageService sendMessageService;
 
     @Override
-    protected void ExecuteCommandInternal(Message message, Player player) {
+    protected void ExecuteAuthorizedCommand(Message message, Player player) {
 
         Optional<List<Match>> matсhesOptional = matchesDao.Get(player.getId());
         if (matсhesOptional.isPresent()) {

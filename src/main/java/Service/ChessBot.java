@@ -4,6 +4,7 @@ import Controllers.ControllerFactory;
 import Controllers.IController;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.glassfish.jersey.internal.util.ExceptionUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -30,7 +31,7 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
             controller.ExecuteCommand(update.getMessage());
         } catch (Exception exception) {
             logger.severe(String.format("Failed to process request from User:{%s} and message: {%s} request failed with following error:{%s}",
-                    update.getMessage().getFrom().getId(), update.getMessage().getText(), exception.getMessage()));
+                    update.getMessage().getFrom().getId(), update.getMessage().getText(), ExceptionUtils.exceptionStackTraceAsString(exception)));
             exception.printStackTrace();
         }
     }

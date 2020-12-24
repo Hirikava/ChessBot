@@ -39,7 +39,7 @@ public class GameSessionsService {
     }
 
     private void renderBoardAndSendToAPlayer(Player player, GameState gameState, PlayerColour playerColour) {
-        ByteArrayInputStream boardImage = chessBordRenderer.RenderChessBoard(gameState.getBoard(), PlayerColour.White);
+        ByteArrayInputStream boardImage = chessBordRenderer.RenderChessBoard(gameState.getBoard(), playerColour);
         if (boardImage != null)
             sendMessageService.SendPhoto(player.getChatId(), boardImage, "board");
         else {
