@@ -1,12 +1,13 @@
 package DI;
 
-import Domain.Pieces;
 import Infrastructer.DataBaseConnectionInfo;
 import Service.*;
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
+import java.util.logging.Logger;
 
 
 public class DIContainer extends AbstractModule {
@@ -31,5 +32,6 @@ public class DIContainer extends AbstractModule {
         bind(ChessBot.class).toInstance(chessBot);
         bind(ISendMessageService.class).toInstance(chessBot);
         bind(SearchQueueService.class).toInstance(new SearchQueueService());
+        bind(Logger.class).annotatedWith(Names.named("logger")).toInstance(Logger.getLogger(""));
     }
 }

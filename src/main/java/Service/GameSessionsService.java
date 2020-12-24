@@ -6,16 +6,11 @@ import Domain.PlayerColour;
 import ServerModels.GameInfo;
 import ServerModels.Player;
 import com.google.inject.Inject;
-import org.javatuples.Triplet;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-
+import com.google.inject.name.Named;
 
 import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class GameSessionsService {
 
@@ -24,6 +19,9 @@ public class GameSessionsService {
 
     @Inject
     private ChessBordRenderer chessBordRenderer;
+
+    @Inject @Named("logger")
+    private Logger logger;
 
     private ConcurrentHashMap<Player, GameInfo> gameSessionsMap = new ConcurrentHashMap<Player, GameInfo>();
 
@@ -45,7 +43,7 @@ public class GameSessionsService {
         if (boardImage != null)
             sendMessageService.SendPhoto(player.getChatId(), boardImage, "board");
         else {
-            //log
+            logger.fine(String.format("Renderer returned null, don't send photo to User:{%s}", player.getChatId()));
         }
     }
 

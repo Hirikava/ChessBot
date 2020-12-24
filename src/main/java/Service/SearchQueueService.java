@@ -11,9 +11,9 @@ import java.util.Queue;
 public class SearchQueueService {
 
     @Inject
-    GameSessionsService gameSessionsService;
+    private GameSessionsService gameSessionsService;
 
-    private Queue<Player> playersQueue = new LinkedList<Player>();
+    final Queue<Player> playersQueue = new LinkedList<Player>();
 
 
     public void addPlayerIntoAQueue(Player player) {
@@ -41,7 +41,6 @@ public class SearchQueueService {
 
             Player player1 = playersQueue.poll();
             Player player2 = playersQueue.poll();
-
             gameSessionsService.startNewMatch(player1, player2);
         }
     }

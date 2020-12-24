@@ -3,6 +3,7 @@ package Service;
 import Controllers.ControllerFactory;
 import Controllers.IController;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -11,11 +12,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.ByteArrayInputStream;
+import java.util.logging.Logger;
 
 public class ChessBot extends TelegramLongPollingBot implements ISendMessageService {
 
     @Inject
     private ControllerFactory controllerFactory;
+
+    @Inject @Named("logger")
+    private Logger logger;
 
 
     @Override
@@ -24,6 +29,8 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
             IController controller = controllerFactory.GetController(update.getMessage());
             controller.ExecuteCommand(update.getMessage());
         } catch (Exception exception) {
+            logger.severe(String.format("Failed to process request from User:{%s} and message: {%s} request failed with following error:{%s}",
+                    update.getMessage().getFrom().getId(), update.getMessage().getText(), exception.getMessage()));
             exception.printStackTrace();
         }
     }
@@ -45,7 +52,7 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
         try {
             execute(new SendMessage(chatId, message));
         } catch (TelegramApiException telegramApiException) {
-            //log
+            logger.severe(String.format("Failed to send Message:{%s} to User:{%s}", message, chatId));
             telegramApiException.printStackTrace();
         }
     }
@@ -55,7 +62,7 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
         try {
             execute(new SendPhoto(chatId, new InputFile().setMedia(byteArrayInputStream, mediaFileName)));
         } catch (TelegramApiException telegramApiException) {
-            //log
+            logger.severe(String.format("Failed to send photo to User:{%s}", chatId));
             telegramApiException.printStackTrace();
         }
     }

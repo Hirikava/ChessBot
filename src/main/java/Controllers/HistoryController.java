@@ -41,9 +41,6 @@ public class HistoryController extends AuthorizedController {
                 sendMessageService.SendMessage(player.getChatId(), sb.toString());
             }
 
-        } else {
-            //log error;
         }
-
     }
 }

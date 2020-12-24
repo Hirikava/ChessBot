@@ -7,9 +7,12 @@ import ServerModels.Match;
 import ServerModels.Player;
 import Service.ChessBordRenderer;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.javatuples.Pair;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import java.io.ByteArrayInputStream;
+import java.util.logging.Logger;
 
 public class TurnController extends GameSessionController {
 
@@ -19,6 +22,9 @@ public class TurnController extends GameSessionController {
 
     @Inject
     private MatchesDao matchesDao;
+
+    @Inject @Named("logger")
+    private Logger logger;
 
 
     @Override
@@ -58,8 +64,7 @@ public class TurnController extends GameSessionController {
         if (imageForPlayer != null)
             sendMessageService.SendPhoto(player.getChatId(), imageForPlayer, "board");
         else {
-            //log error
-
+            logger.fine(String.format("Renderer returned null, don't send photo to User:{%s}", player.getChatId()));
         }
     }
 
@@ -75,7 +80,7 @@ public class TurnController extends GameSessionController {
         Cords cords1 = GetCoordinate(cords[0]);
         Cords cords2 = GetCoordinate(cords[1]);
         if (cords1 != null && cords2 != null)
-            return new Pair<Cords, Cords>(cords1, cords2);
+            return new Pair(cords1, cords2);
         return null;
     }
 
