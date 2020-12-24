@@ -9,11 +9,15 @@ public class DataBaseConfiguration {
 
     public static void Configure(DataSource dataSource) {
         JdbcTemplate template = new JdbcTemplate(dataSource);
+
         if (!IsTableExists(DataBaseConstants.TableNames.PlayersTableName, template))
             CreatePlayerTable(template);
 
         if (!IsTableExists(DataBaseConstants.TableNames.MatchesTableName, template))
             CreateMatchesTable(template);
+
+        if (!IsTableExists(DataBaseConstants.TableNames.BugReportTable, template))
+            CreateBugTable(template);
 
     }
 
@@ -35,6 +39,13 @@ public class DataBaseConfiguration {
         String createPlayerTableSqlQuery = "CREATE TABLE " + DataBaseConstants.TableNames.MatchesTableName + "(" + DataBaseConstants.FieldNames.IdFieldName + " INT PRIMARY KEY AUTO_INCREMENT, " +
                 DataBaseConstants.FieldNames.PlayerId1 + " INT, " + DataBaseConstants.FieldNames.PlayerId2 + " INT, " + DataBaseConstants.FieldNames.WinnerId + " INT " +
                 ")";
+        template.update(createPlayerTableSqlQuery);
+    }
+
+    private static void CreateBugTable(JdbcTemplate template) {
+        String createPlayerTableSqlQuery = "CREATE TABLE " + DataBaseConstants.TableNames.BugReportTable + "(" + DataBaseConstants.FieldNames.IdFieldName + " INT PRIMARY KEY AUTO_INCREMENT, " +
+                DataBaseConstants.FieldNames.UserId + " INT, " +
+                DataBaseConstants.FieldNames.Message + " VARCHAR(2000) " + ")";
         template.update(createPlayerTableSqlQuery);
     }
 

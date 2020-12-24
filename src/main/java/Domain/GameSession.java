@@ -195,7 +195,7 @@ public class GameSession {
         }
         return true;
     }
-    
+
     private Boolean diagonalTurn(Cords coordsFrom, Cords coordsTo) {
         return Math.abs(coordsFrom.getX() - coordsTo.getX()) == Math.abs(coordsFrom.getY() - coordsTo.getY());
     }

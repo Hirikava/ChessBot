@@ -17,7 +17,8 @@ public class HelpController implements IController {
             "/turn x1y1-x2y2 - сделать ход из клетки x1y1 в клетку x2y2, где x - это литерал от a-h, а y - это чифра от 1 - 8. \n" +
             "/concede - сдаться \n\n" +
             "Дополнительные команды:\n" +
-            "/history - посмотреть список недавних матчей\n";
+            "/history - посмотреть список недавних матчей\n" +
+            "/bug {сообщение об ошибке} - оставить сообщение об ошибке";
 
     @Override
     public void ExecuteCommand(Message message) {
