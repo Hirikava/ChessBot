@@ -20,11 +20,11 @@ public class StartController implements IController {
     public void ExecuteCommand(Message message) {
         Optional<Player> optionalPlayer = playerDao.Get(message.getFrom().getId());
         if (optionalPlayer.isPresent()) {
-            sendMessageService.Send(new SendMessage(message.getChat().getId().toString(), "Вы уже зарегестрированы."));
+            sendMessageService.SendMessage(message.getChat().getId().toString(), "Вы уже зарегестрированы.");
             return;
         }
 
         playerDao.Insert(new Player(message.getFrom().getId(), message.getChatId().toString(), message.getFrom().getUserName()));
-        sendMessageService.Send(new SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы."));
+        sendMessageService.SendMessage(message.getChat().getId().toString(), "Вы успешно зарегистрированы.");
     }
 }

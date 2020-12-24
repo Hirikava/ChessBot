@@ -5,7 +5,6 @@ import ServerModels.GameInfo;
 import ServerModels.Match;
 import ServerModels.Player;
 import com.google.inject.Inject;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 public class ConcedeController extends GameSessionController {
@@ -16,6 +15,6 @@ public class ConcedeController extends GameSessionController {
     protected void ExecuteCommandInternal(Message message, Player player, GameInfo gameInfo) {
         gameSessionsService.endMatch(player, gameInfo.getOpponent());
         matchesDao.Insert(new Match(player.getId(), gameInfo.getOpponent().getId(), gameInfo.getOpponent().getId()));
-        sendMessageService.Send(new SendMessage(gameInfo.getOpponent().getChatId(), String.format("%s сдался", player.getUserName())));
+        sendMessageService.SendMessage(gameInfo.getOpponent().getChatId(), String.format("%s сдался", player.getUserName()));
     }
 }

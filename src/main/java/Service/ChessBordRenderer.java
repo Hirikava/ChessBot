@@ -11,8 +11,7 @@ import java.awt.image.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-public class ChessBordRenderer {
-
+public class ChessBordRenderer implements IChessBoardRenderer {
 
     @Inject
     IChessGameAssetProvider chessGameAssetProvider;

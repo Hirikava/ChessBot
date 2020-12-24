@@ -18,11 +18,11 @@ public class EnqueueController extends AuthorizedController {
     @Override
     public void ExecuteCommandInternal(Message message, Player player) {
         if (playerResolverService.IsPlayerBusy(player)) {
-            sendMessageService.Send(new SendMessage(message.getChatId().toString(), "Вы уже совершаете действие, завершите его перед тем как нчать новое"));
+            sendMessageService.SendMessage(player.getChatId(), "Вы уже совершаете действие, завершите его перед тем как нчать новое.");
             return;
         }
 
         searchQueueService.addPlayerIntoAQueue(player);
-        sendMessageService.Send(new SendMessage(message.getChatId().toString(), "Вы успешно вствли в очередь, для поиска игры"));
+        sendMessageService.SendMessage(player.getChatId(), "Вы успешно встали в очередь, для поиска игры.");
     }
 }

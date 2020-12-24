@@ -1,6 +1,7 @@
 package Service;
 
 import Domain.GameSession;
+import Domain.GameState;
 import Domain.PlayerColour;
 import ServerModels.GameInfo;
 import ServerModels.Player;
@@ -18,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameSessionsService {
 
-
     @Inject
     private ISendMessageService sendMessageService;
 
@@ -34,15 +34,19 @@ public class GameSessionsService {
         gameSessionsMap.put(player1, new GameInfo(player2, gameSession, PlayerColour.White));
         gameSessionsMap.put(player2, new GameInfo(player1, gameSession, PlayerColour.Black));
 
+        sendMessageService.SendMessage(player1.getChatId(), String.format("Ваш соперник %s.", player2.getUserName()));
+        sendMessageService.SendMessage(player2.getChatId(), String.format("Ваш соперник %s.", player1.getUserName()));
+        renderBoardAndSendToAPlayer(player1, gameSession.createGameState(), PlayerColour.White);
+        renderBoardAndSendToAPlayer(player2, gameSession.createGameState(), PlayerColour.Black);
+    }
 
-        sendMessageService.Send(new SendMessage(player1.getChatId(), String.format("Ваш соперник %s.", player2.getUserName())));
-        sendMessageService.Send(new SendMessage(player2.getChatId(), String.format("Ваш соперник %s.", player1.getUserName())));
-
-        ByteArrayInputStream forWhite = chessBordRenderer.RenderChessBoard(gameSession.createGameState().getBoard(), PlayerColour.White);
-        ByteArrayInputStream forBlack = chessBordRenderer.RenderChessBoard(gameSession.createGameState().getBoard(), PlayerColour.Black);
-
-        sendMessageService.Send(new SendPhoto(player1.getChatId(), new InputFile().setMedia(forWhite, "board")));
-        sendMessageService.Send(new SendPhoto(player2.getChatId(), new InputFile().setMedia(forBlack, "board")));
+    private void renderBoardAndSendToAPlayer(Player player, GameState gameState, PlayerColour playerColour) {
+        ByteArrayInputStream boardImage = chessBordRenderer.RenderChessBoard(gameState.getBoard(), PlayerColour.White);
+        if (boardImage != null)
+            sendMessageService.SendPhoto(player.getChatId(), boardImage, "board");
+        else {
+            //log
+        }
     }
 
     public void endMatch(Player player1, Player player2) {

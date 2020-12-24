@@ -27,7 +27,7 @@ public class HistoryController extends AuthorizedController {
         if (matсhesOptional.isPresent()) {
             List<Match> matches = matсhesOptional.get();
             if (matches.size() == 0) {
-                sendMessageService.Send(new SendMessage(player.getChatId(), "Вы ещё не сыграли ни одного матча."));
+                sendMessageService.SendMessage(player.getChatId(), "Вы ещё не сыграли ни одного матча.");
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Недавние матчи:");
@@ -38,7 +38,7 @@ public class HistoryController extends AuthorizedController {
                     sb.append(String.format("%s - %s : %s", player1.isPresent() ? player1.get().getUserName() : "unknown", player1.isPresent() ? player2.get().getUserName() : "unknown", match.getWinnerId() == player.getId() ? "win" : "lose"));
                     sb.append("\n");
                 }
-                sendMessageService.Send(new SendMessage(player.getChatId(), sb.toString()));
+                sendMessageService.SendMessage(player.getChatId(), sb.toString());
             }
 
         } else {

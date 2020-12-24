@@ -19,7 +19,7 @@ public class GameSessionController extends AuthorizedController {
 
         GameInfo gameInfo = gameSessionsService.getGameSession(player);
         if (gameInfo == null) {
-            sendMessageService.Send(new SendMessage(player.getChatId(), "У вас нет активной игровой сессии."));
+            sendMessageService.SendMessage(player.getChatId(), "У вас нет активной игровой сессии.");
             return;
         }
         ExecuteCommandInternal(message, player, gameInfo);

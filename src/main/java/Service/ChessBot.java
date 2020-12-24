@@ -6,8 +6,11 @@ import com.google.inject.Inject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.io.ByteArrayInputStream;
 
 public class ChessBot extends TelegramLongPollingBot implements ISendMessageService {
 
@@ -37,21 +40,22 @@ public class ChessBot extends TelegramLongPollingBot implements ISendMessageServ
         return "PvP Chess Bot";
     }
 
-
     @Override
-    public void Send(SendMessage message) {
+    public void SendMessage(String chatId, String message) {
         try {
-            execute(message);
+            execute(new SendMessage(chatId, message));
         } catch (TelegramApiException telegramApiException) {
+            //log
             telegramApiException.printStackTrace();
         }
     }
 
     @Override
-    public void Send(SendPhoto message) {
+    public void SendPhoto(String chatId, ByteArrayInputStream byteArrayInputStream, String mediaFileName) {
         try {
-            execute(message);
+            execute(new SendPhoto(chatId, new InputFile().setMedia(byteArrayInputStream, mediaFileName)));
         } catch (TelegramApiException telegramApiException) {
+            //log
             telegramApiException.printStackTrace();
         }
     }

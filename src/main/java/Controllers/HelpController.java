@@ -20,6 +20,6 @@ public class HelpController implements IController {
 
     @Override
     public void ExecuteCommand(Message message) {
-        sendMessageService.Send(new SendMessage(message.getChatId().toString(), helpMessage));
+        sendMessageService.SendMessage(message.getChatId().toString(), helpMessage);
     }
 }

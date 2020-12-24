@@ -26,7 +26,6 @@ public class DIContainer extends AbstractModule {
 
         ChessBot chessBot = new ChessBot();
 
-
         bind(IChessGameAssetProvider.class).toInstance(new ChessGameAssetProvider());
         bind(GameSessionsService.class).toInstance(new GameSessionsService());
         bind(ChessBot.class).toInstance(chessBot);

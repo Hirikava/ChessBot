@@ -24,14 +24,15 @@ public class AuthorizedController implements IController {
         Optional<Player> player = playerDao.Get(userId);
 
         if (!player.isPresent()) {
-            sendMessageService.Send(new SendMessage(message.getChatId().toString(), "Для таго что бы начать взаимодействовать с ботом зарегистрируйтесь с помощью команды /start"));
+            sendMessageService.SendMessage(message.getChatId().toString(), "Для таго что бы начать взаимодействовать с ботом зарегистрируйтесь с помощью команды /start");
             return;
         }
-
         ExecuteCommandInternal(message, player.get());
     }
 
     protected void ExecuteCommandInternal(Message message, Player player) {
         throw new NotImplementedException();
-    };
+    }
+
+
 }
